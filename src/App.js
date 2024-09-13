@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import NoteList from './component/NoteList';
 import NoteFormModal from './component/NoteForm';
+import Footer from './component/Footer';
 import { getInitialData } from './utilities/data';
 import HeroImage from './aset/hero.png';
 import Swal from 'sweetalert2';
 import { AiOutlineSearch } from 'react-icons/ai';
-import Footer from './component/Footer';
 
 function App() {
   // state data
@@ -69,7 +69,7 @@ function App() {
         />
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/70 to-transparent flex items-center justify-center">
           <div className="text-center text-white">
-            <h1 className="text-4xl font-bold mb-2">Notes App</h1>
+            <h1 className="text-4xl font-bold mb-2 opacity-80">Notes App</h1>
             <p className="text-lg">Wrote anything you think here!</p>
           </div>
         </div>

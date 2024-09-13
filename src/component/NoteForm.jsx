@@ -6,7 +6,7 @@ function NoteFormModal({ setNotes, setIsModalOpen }) {
     const [body, setBody] = useState('');
     const [charCount, setCharCount] = useState(50);
 
-    // initiation id
+    // initiation submit
     const handleSubmit = (e) => {
         e.preventDefault();
         const newNote = {
@@ -29,7 +29,7 @@ function NoteFormModal({ setNotes, setIsModalOpen }) {
         });
     };
 
-    // limitation notes title
+    // limitation notes title character
     const handleTitleChange = (e) => {
         const value = e.target.value;
         if (value.length <= 50) {
