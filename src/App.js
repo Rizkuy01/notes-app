@@ -5,6 +5,7 @@ import { getInitialData } from './utilities/data';
 import HeroImage from './aset/hero.png';
 import Swal from 'sweetalert2';
 import { AiOutlineSearch } from 'react-icons/ai';
+import Footer from './component/Footer';
 
 function App() {
   // state data
@@ -114,6 +115,7 @@ function App() {
       {isModalOpen && (
         <NoteFormModal setNotes={setNotes} setIsModalOpen={setIsModalOpen} />
       )}
+      <Footer />
     </div>
   );
 }
