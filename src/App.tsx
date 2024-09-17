@@ -7,11 +7,20 @@ import HeroImage from './aset/hero.png';
 import Swal from 'sweetalert2';
 import { AiOutlineSearch } from 'react-icons/ai';
 
+// Define Note type
+interface Note {
+  id: string;
+  title: string;
+  body: string;
+  createdAt: string;
+  archived: boolean;
+}
+
 function App() {
   // state data
-  const [notes, setNotes] = useState(getInitialData());
-  const [searchData, setSearchData] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [notes, setNotes] = useState<Note[]>(getInitialData());
+  const [searchData, setSearchData] = useState<string>('');
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   // conditional status notes
   const activeNotes = notes.filter(note => !note.archived);
@@ -19,14 +28,14 @@ function App() {
 
   // searching filter
   const filteredActiveNotes = activeNotes.filter(note =>
-    note.title.toLowerCase().includes(searchData.toLowerCase())
+    note.body.toLowerCase().includes(searchData.toLowerCase())
   );
   const filteredArchivedNotes = archivedNotes.filter(note =>
-    note.title.toLowerCase().includes(searchData.toLowerCase())
+    note.body.toLowerCase().includes(searchData.toLowerCase())
   );
 
-  // swal
-  const deleteNote = (id) => {
+  // swal delete function
+  const deleteNote = (id: string) => {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -50,8 +59,8 @@ function App() {
     });
   };
 
-  // archive notes
-  const toggleArchiveNote = (id) => {
+  // archive notes function
+  const toggleArchiveNote = (id: string) => {
     setNotes(prevNotes =>
       prevNotes.map(note =>
         note.id === id ? { ...note, archived: !note.archived } : note
@@ -94,7 +103,7 @@ function App() {
         </div>
       </div>
 
-      {/*  active notes */}
+      {/* active notes */}
       <NoteList
         notes={filteredActiveNotes}
         onDeleteNote={deleteNote}
@@ -102,7 +111,7 @@ function App() {
         isArchived={false}
       />
 
-      {/*  archive notes */}
+      {/* archived notes */}
       <h2 className="text-xl font-semibold mt-10 mb-4">Archived Notes</h2>
       <NoteList
         notes={filteredArchivedNotes}
