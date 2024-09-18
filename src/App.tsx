@@ -6,6 +6,8 @@ import { getInitialData } from './utilities/data';
 import HeroImage from './aset/hero.png';
 import Swal from 'sweetalert2';
 import { AiOutlineSearch } from 'react-icons/ai';
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import AuthPage from './component/AuthPage';
 
 // Define Note type
 interface Note {
@@ -16,7 +18,7 @@ interface Note {
   archived: boolean;
 }
 
-function App() {
+const NotePage = () => {
   // state data
   const [notes, setNotes] = useState<Note[]>(getInitialData());
   const [searchData, setSearchData] = useState<string>('');
@@ -126,6 +128,19 @@ function App() {
       )}
       <Footer />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        {/* Halaman Autentikasi sebagai root */}
+        <Route path="/" element={<AuthPage />} />
+        {/* Halaman Notes */}
+        <Route path="/notes" element={<NotePage />} />
+      </Routes>
+    </Router>
   );
 }
 
