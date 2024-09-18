@@ -47,5 +47,6 @@
   "devDependencies": {
     "tailwindcss": "^3.4.11",
     "vite": "^5.4.4"
-  }
+  },
+  "proxy": "https://notes-api-knacademy.vercel.app"
 }
