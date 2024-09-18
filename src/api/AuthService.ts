@@ -1,38 +1,71 @@
-import axios from 'axios';
-
 const API_URL = 'http://notes-api-knacademy.vercel.app/api';
 
 // Register
 export const register = async (username: string, email: string, password: string) => {
-  const response = await axios.post(`${API_URL}/auth/register`, { username, email, password }, {
-    // mode: 'cors',
-    withCredentials: true,
+  const response = await fetch(`${API_URL}/auth/register`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ username, email, password }),
+    mode: 'cors',
+    
   });
-  console.log(response);
-  if (response.data.token) {
-    localStorage.setItem('token', response.data.token); // Simpan token di local storage
+
+  if (!response.ok) {
+    throw new Error('Failed to register');
   }
-  return response.data;
+
+  const data = await response.json();
+
+  if (data.token) {
+    localStorage.setItem('token', data.token);
+  }
+  return data;
 };
 
 // Login
 export const login = async (email: string, password: string) => {
-  const response = await axios.post(`${API_URL}/auth/login`, { email, password });
-  if (response.data.token) {
-    localStorage.setItem('token', response.data.token);
+  const response = await fetch(`${API_URL}/auth/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, password })
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to login');
   }
-  return response.data;
+
+  const data = await response.json();
+
+  if (data.token) {
+    localStorage.setItem('token', data.token);
+  }
+  return data;
 };
 
 // Get user data
 export const getUser = async () => {
   const token = localStorage.getItem('token');
+
   if (token) {
-    const response = await axios.get(`${API_URL}/auth/me`, {
-      headers: { Authorization: `Bearer ${token}` }
+    const response = await fetch(`${API_URL}/auth/me`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
-    return response.data;
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch user data');
+    }
+
+    const data = await response.json();
+    return data;
   }
+
   return null;
 };
 

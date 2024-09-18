@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import Swal from 'sweetalert2';
-import NoteImage from '../aset/note.png'; // Ganti dengan path gambar yang sesuai
+import NoteImage from '../aset/note.png';
+
+const API_URL = 'https://notes-api-knacademy.vercel.app/api';
 
 const AuthPage: React.FC = () => {
   const [isRegistering, setIsRegistering] = useState<boolean>(true);
@@ -11,11 +12,19 @@ const AuthPage: React.FC = () => {
 
   const handleRegister = async () => {
     try {
-      const response = await axios.post('http://notes-api-knacademy.vercel.app/api/auth/register', {
-        username,
-        email,
-        password,
+      const response = await fetch(`${API_URL}/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, email, password }),
       });
+
+      if (!response.ok) {
+        throw new Error('Registration failed');
+      }
+
+      const data = await response.json();
       Swal.fire({
         icon: 'success',
         title: 'Registration Successful!',
@@ -23,6 +32,7 @@ const AuthPage: React.FC = () => {
         timer: 1500,
         showConfirmButton: false,
       });
+
       setUsername('');
       setEmail('');
       setPassword('');
@@ -37,11 +47,20 @@ const AuthPage: React.FC = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://notes-api-knacademy.vercel.app/api/auth/login', {
-        email,
-        password,
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
       });
-      localStorage.setItem('token', response.data.token);
+
+      if (!response.ok) {
+        throw new Error('Login failed');
+      }
+
+      const data = await response.json();
+      localStorage.setItem('token', data.token);
       Swal.fire({
         icon: 'success',
         title: 'Login Successful!',
@@ -49,6 +68,7 @@ const AuthPage: React.FC = () => {
         timer: 1500,
         showConfirmButton: false,
       });
+
       // Redirect or update state as needed
     } catch (error) {
       Swal.fire({
