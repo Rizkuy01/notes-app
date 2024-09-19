@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import NoteImage from '../aset/note.png';
 
 const API_URL = 'https://notes-api-knacademy.vercel.app/api';
 
 const AuthPage: React.FC = () => {
-  const [isRegistering, setIsRegistering] = useState<boolean>(true);
+  const [isRegistering, setIsRegistering] = useState<boolean>(false);
   const [username, setUsername] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   const handleRegister = async () => {
     try {
@@ -70,8 +70,8 @@ const AuthPage: React.FC = () => {
         showConfirmButton: false,
       });
 
-      // Redirect to the notes page
-      navigate('/notes'); // Redirect to /notes page
+      // redirect
+      navigate('/notes'); 
     } catch (error) {
       Swal.fire({
         icon: 'error',

@@ -4,11 +4,13 @@ import NoteFormModal from './component/NoteForm';
 import NoteDetailPage from './component/NoteDetailPage';
 import Footer from './component/Footer';
 import { getInitialData } from './utilities/data';
+import { ThemeProvider, useTheme } from './component/ThemeContext';
 import HeroImage from './aset/hero.png';
 import Swal from 'sweetalert2';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import AuthPage from './component/AuthPage';
+import './index.css';
 
 // Define Note type
 interface Note {
@@ -73,11 +75,14 @@ const NotePage = () => {
     );
   };
 
+  // function edit notes
   const handleEditNote = (note: Note) => {
     setNoteToEdit(note);
     setIsModalOpen(true);
   };
+  
 
+  // function logout
   const handleLogout = () => {
     localStorage.removeItem('token');
     Swal.fire({
@@ -91,41 +96,42 @@ const NotePage = () => {
     });
   };
 
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-5">
-      <header className="relative mb-10">
+    <div className="min-h-screen bg-gray-100 p-4 md:p-5  dark:bg-blue-950">
+      <header className="relative mb-6 md:mb-10">
         <img
           src={HeroImage}
           alt="Notes App Banner"
-          className="w-full h-[60vh] object-cover rounded-lg shadow-lg"
+          className="w-full h-[40vh] md:h-[60vh] object-cover rounded-lg shadow-lg"
         />
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/70 to-transparent flex items-center justify-center">
-          <div className="text-center text-white">
-            <h1 className="text-4xl font-bold mb-2 opacity-80">Notes App</h1>
-            <p className="text-lg">Wrote anything you think here!</p>
+          <div className="text-center text-white px-4 md:px-0">
+            <h1 className="text-3xl md:text-4xl font-bold mb-2 opacity-80">Notes App</h1>
+            <p className="text-base md:text-lg">Wrote anything you think here!</p>
           </div>
         </div>
       </header>
 
-      <div className="flex justify-between items-center mb-5">
+      <div className="flex flex-col md:flex-row justify-between items-center p-2 mb-5 bg-green-600">
         <button
-          className="px-6 py-3 bg-green-600 text-white rounded-lg shadow-lg hover:bg-green-700 focus:ring-4 focus:ring-green-300 transition-transform transform hover:scale-105"
+          className="px-4 py-2 md:px-6 md:py-3 bg-white text-green-600 rounded-lg shadow-lg  hover:bg-gray-300 focus:ring-4 focus:ring-green-300 transition-transform transform hover:scale-105 mb-4 md:mb-0"
           onClick={() => setIsModalOpen(true)}
         >
           + Add Notes
         </button>
-        <div className="relative">
+        <div className="relative w-full md:w-auto">
           <AiOutlineSearch className="absolute left-3 top-2 text-gray-500" />
           <input
             type="text"
-            className="pl-10 p-3 border border-gray-300 rounded-lg w-72 shadow-md focus:outline-none focus:ring-2 focus:ring-green-400"
+            className="pl-10 p-3 border border-gray-300 rounded-lg w-full md:w-72 shadow-md focus:outline-none focus:ring-2 focus:ring-green-400"
             value={searchData}
             onChange={(e) => setSearchData(e.target.value)}
             placeholder="Search notes..."
           />
         </div>
         <button
-          className="ml-5 px-6 py-3 bg-red-600 text-white rounded-lg shadow-lg hover:bg-red-700 focus:ring-4 focus:ring-red-300 transition-transform transform hover:scale-105"
+          className="mt-4 md:mt-0 ml-0 md:ml-5 px-4 py-2 md:px-6 md:py-3 bg-red-600 text-white rounded-lg shadow-lg hover:bg-red-700 focus:ring-4 focus:ring-red-300 transition-transform transform hover:scale-105"
           onClick={handleLogout}
         >
           Logout
@@ -142,7 +148,7 @@ const NotePage = () => {
       />
 
       {/* archived notes */}
-      <h2 className="text-xl font-semibold mt-10 mb-4">Archived Notes</h2>
+      <h2 className="text-xl font-semibold mt-8 mb-4 dark: text-gray-300">Archived Notes</h2>
       <NoteList
         notes={filteredArchivedNotes}
         onDeleteNote={deleteNote}
@@ -162,20 +168,37 @@ const NotePage = () => {
 
 function App() {
   const [notes, setNotes] = useState<Note[]>(getInitialData());
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+  
+  // function darkmode
+  const toggleDarkMode = () => {
+    setIsDarkMode(prevMode => !prevMode);
+  };
+
   return (
-    <Router>
-      <Routes>
-        {/* Halaman Autentikasi sebagai root */}
-        <Route path="/" element={<AuthPage />} />
-        {/* Halaman Notes */}
-        <Route path="/notes" element={<NotePage />} />
-        {/* Detail Notes */}
-        <Route
-          path="/notes/:noteId"
-          element={<NoteDetailPage notes={notes} />} 
-        />
-      </Routes>
-    </Router>
+    <ThemeProvider>
+      <Router>
+        <div className={isDarkMode ? 'dark' : ''}>
+          <Routes>
+            {/* Halaman Autentikasi sebagai root */}
+            <Route path="/" element={<AuthPage />} />
+            {/* Halaman Notes */}
+            <Route path="/notes" element={<NotePage />} />
+            {/* Detail Notes */}
+            <Route
+              path="/notes/:noteId"
+              element={<NoteDetailPage notes={notes} />} 
+            />
+          </Routes>
+          <button
+            className="fixed bottom-4 right-4 p-3 bg-gray-800 text-white rounded-full shadow-lg"
+            onClick={toggleDarkMode}
+          >
+            {isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+          </button>
+        </div>
+      </Router>
+    </ThemeProvider>
   );
 }
 

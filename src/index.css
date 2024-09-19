@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Tema default (terang) */
+body {
+    background-color: #ffffff;
+    color: #000000;
+  }
+  
+  /* Tema gelap */
+  body.dark {
+    background-color: #1a202c; /* atau warna gelap lainnya */
+    color: #e2e8f0; /* atau warna teks terang lainnya */
+  }
+  
+  /* Styling untuk elemen yang mungkin perlu penyesuaian */
+  button {
+    background-color: #2d3748; /* atau warna gelap */
+    color: #edf2f7; /* atau warna terang */
+  }
+  
+  button:hover {
+    background-color: #4a5568; /* atau warna gelap saat hover */
+  }
+  

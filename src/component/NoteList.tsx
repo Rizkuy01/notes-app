@@ -27,14 +27,14 @@ function NoteList({ notes, onDeleteNote, onToggleArchive, onEditNote, isArchived
         notes.map(note => (
           <div
             key={note.id}
-            className={`bg-white p-6 shadow-lg rounded-lg transform transition duration-300 hover:scale-105 cursor-pointer ${
+            className={`bg-white dark:bg-gray-800 p-6 shadow-lg rounded-lg transform transition duration-300 hover:scale-105 cursor-pointer ${
               isArchived ? 'opacity-70' : 'opacity-100'
             }`}
-            onClick={() => navigate(`/notes/${note.id}`)} // Navigasi ke halaman detail saat diklik
+            onClick={() => navigate(`/notes/${note.id}`)}
           >
-            <h3 className="text-lg font-bold text-gray-800 mb-2">{note.title}</h3>
-            <p className="text-gray-500 text-sm mb-4">{showFormattedDate(note.createdAt)}</p>
-            <p className="text-gray-700 mb-4">{note.body}</p>
+            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-2">{note.title}</h3>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">{showFormattedDate(note.createdAt)}</p>
+            <p className="text-gray-700 dark:text-gray-300 mb-4">{note.body}</p>
 
             <div className="flex justify-between">
                 {/* button edit */}
@@ -62,7 +62,7 @@ function NoteList({ notes, onDeleteNote, onToggleArchive, onEditNote, isArchived
           </div>
         ))
       ) : (
-        <p className="text-gray-500">No {isArchived ? 'archived' : 'active'} notes available.</p>
+        <p className="text-gray-500 dark:text-gray-400">No {isArchived ? 'archived' : 'active'} notes available.</p>
       )}
     </div>
   );
