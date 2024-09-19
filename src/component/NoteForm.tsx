@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 
 interface NoteFormModalProps {
   setNotes: React.Dispatch<React.SetStateAction<Note[]>>;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  noteToEdit?: Note; 
 }
 
 // Define the Note interface (if not already defined in a global types file)
@@ -15,30 +16,54 @@ interface Note {
   archived: boolean;
 }
 
-const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen }) => {
-  const [title, setTitle] = useState<string>('');
-  const [body, setBody] = useState<string>('');
-  const [charCount, setCharCount] = useState<number>(50);
+const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen, noteToEdit }) => {
+  const [title, setTitle] = useState<string>(noteToEdit ? noteToEdit.title : '');
+  const [body, setBody] = useState<string>(noteToEdit ? noteToEdit.body : '');
+  const [charCount, setCharCount] = useState<number>(50 - (noteToEdit ? noteToEdit.title.length : 0));
 
+  // handle submit
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const newNote: Note = {
-      id: "SHP" + new Date().toISOString(),
-      title,
-      body,
-      createdAt: new Date().toISOString(),
-      archived: false,
-    };
-    setNotes(prevNotes => [newNote, ...prevNotes]);
-    setIsModalOpen(false);
+    
+    if (noteToEdit) {
+      // edit note
+      setNotes(prevNotes =>
+        prevNotes.map(note =>
+          note.id === noteToEdit.id
+            ? { ...note, title, body }
+            : note
+        )
+      );
 
-    Swal.fire({
-      icon: 'success',
-      title: 'Note Added!',
-      text: 'Your note has been successfully added.',
-      timer: 1500,
-      showConfirmButton: false,
-    });
+      Swal.fire({
+        icon: 'success',
+        title: 'Note Updated!',
+        text: 'Your note has been successfully updated.',
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } else {
+      // add note
+      const newNote: Note = {
+        id: "SHP" + new Date().toISOString(),
+        title,
+        body,
+        createdAt: new Date().toISOString(),
+        archived: false,
+      };
+
+      setNotes(prevNotes => [newNote, ...prevNotes]);
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Note Added!',
+        text: 'Your note has been successfully added.',
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    }
+
+    setIsModalOpen(false); 
   };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +77,9 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-8 rounded-lg shadow-2xl w-96 transform transition-all duration-300">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">Add a New Note</h2>
+        <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
+          {noteToEdit ? 'Edit Note' : 'Add a New Note'}
+        </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-5">
             <label className="block text-gray-700 font-semibold mb-2">Title</label>
@@ -91,13 +118,13 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen 
               type="submit"
               className="px-5 py-2 bg-green-600 text-white rounded-lg shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105"
             >
-              Add Note
+              {noteToEdit ? 'Update Note' : 'Add Note'}
             </button>
           </div>
         </form>
       </div>
     </div>
   );
-}
+};
 
 export default NoteFormModal;

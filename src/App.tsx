@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import NoteList from './component/NoteList';
 import NoteFormModal from './component/NoteForm';
+import NoteDetailPage from './component/NoteDetailPage';
 import Footer from './component/Footer';
 import { getInitialData } from './utilities/data';
 import HeroImage from './aset/hero.png';
@@ -23,6 +24,8 @@ const NotePage = () => {
   const [notes, setNotes] = useState<Note[]>(getInitialData());
   const [searchData, setSearchData] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [noteToEdit, setNoteToEdit] = useState<Note | null>(null);
+  const navigate = useNavigate();
 
   // conditional status notes
   const activeNotes = notes.filter(note => !note.archived);
@@ -70,6 +73,24 @@ const NotePage = () => {
     );
   };
 
+  const handleEditNote = (note: Note) => {
+    setNoteToEdit(note);
+    setIsModalOpen(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    Swal.fire({
+      icon: 'success',
+      title: 'Logged Out',
+      text: 'You have been logged out successfully.',
+      timer: 1500,
+      showConfirmButton: false,
+    }).then(() => {
+      navigate('/'); 
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-5">
       <header className="relative mb-10">
@@ -103,6 +124,12 @@ const NotePage = () => {
             placeholder="Search notes..."
           />
         </div>
+        <button
+          className="ml-5 px-6 py-3 bg-red-600 text-white rounded-lg shadow-lg hover:bg-red-700 focus:ring-4 focus:ring-red-300 transition-transform transform hover:scale-105"
+          onClick={handleLogout}
+        >
+          Logout
+        </button>
       </div>
 
       {/* active notes */}
@@ -110,6 +137,7 @@ const NotePage = () => {
         notes={filteredActiveNotes}
         onDeleteNote={deleteNote}
         onToggleArchive={toggleArchiveNote}
+        onEditNote={handleEditNote}
         isArchived={false}
       />
 
@@ -119,12 +147,13 @@ const NotePage = () => {
         notes={filteredArchivedNotes}
         onDeleteNote={deleteNote}
         onToggleArchive={toggleArchiveNote}
+        onEditNote={handleEditNote}
         isArchived={true}
       />
 
       {/* modal add notes */}
       {isModalOpen && (
-        <NoteFormModal setNotes={setNotes} setIsModalOpen={setIsModalOpen} />
+        <NoteFormModal setNotes={setNotes} setIsModalOpen={setIsModalOpen} noteToEdit={noteToEdit || undefined} />
       )}
       <Footer />
     </div>
@@ -132,6 +161,7 @@ const NotePage = () => {
 }
 
 function App() {
+  const [notes, setNotes] = useState<Note[]>(getInitialData());
   return (
     <Router>
       <Routes>
@@ -139,6 +169,11 @@ function App() {
         <Route path="/" element={<AuthPage />} />
         {/* Halaman Notes */}
         <Route path="/notes" element={<NotePage />} />
+        {/* Detail Notes */}
+        <Route
+          path="/notes/:noteId"
+          element={<NoteDetailPage notes={notes} />} 
+        />
       </Routes>
     </Router>
   );
