@@ -1,4 +1,13 @@
-const API_URL = 'http://notes-api-knacademy.vercel.app/api';
+
+const API_URL = 'https://notes-api-knacademy.vercel.app/api';
+
+export interface Note {
+  id: string;
+  title: string;
+  body: string;
+  createdAt: string;
+  archived: boolean;
+}
 
 // Register
 export const register = async (username: string, email: string, password: string) => {
@@ -9,7 +18,6 @@ export const register = async (username: string, email: string, password: string
     },
     body: JSON.stringify({ username, email, password }),
     mode: 'cors',
-    
   });
 
   if (!response.ok) {
@@ -31,7 +39,7 @@ export const login = async (email: string, password: string) => {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ email, password })
+    body: JSON.stringify({ email, password }),
   });
 
   if (!response.ok) {
@@ -67,6 +75,29 @@ export const getUser = async () => {
   }
 
   return null;
+};
+
+// Get user's notes
+export const getUserNotes = async () => {
+  const token = localStorage.getItem('token');
+
+  if (token) {
+    const response = await fetch(`${API_URL}/notes`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch notes');
+    }
+
+    const data = await response.json();
+    return data;
+  }
+
+  return [];
 };
 
 // Logout

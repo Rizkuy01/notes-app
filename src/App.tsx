@@ -4,12 +4,13 @@ import NoteFormModal from './component/NoteForm';
 import NoteDetailPage from './component/NoteDetailPage';
 import Footer from './component/Footer';
 import { getInitialData } from './utilities/data';
-import { ThemeProvider, useTheme } from './component/ThemeContext';
+import { ThemeProvider } from './component/ThemeContext';
 import HeroImage from './aset/hero.png';
 import Swal from 'sweetalert2';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import AuthPage from './component/AuthPage';
+import { LanguageProvider, useLanguage } from './component/LanguageContext';
 import './index.css';
 
 // Define Note type
@@ -22,18 +23,16 @@ interface Note {
 }
 
 const NotePage = () => {
-  // state data
   const [notes, setNotes] = useState<Note[]>(getInitialData());
   const [searchData, setSearchData] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [noteToEdit, setNoteToEdit] = useState<Note | null>(null);
   const navigate = useNavigate();
+  const { language, toggleLanguage } = useLanguage(); // Mengambil bahasa dan fungsi toggle dari context
 
-  // conditional status notes
   const activeNotes = notes.filter(note => !note.archived);
   const archivedNotes = notes.filter(note => note.archived);
 
-  // searching filter
   const filteredActiveNotes = activeNotes.filter(note =>
     note.body.toLowerCase().includes(searchData.toLowerCase())
   );
@@ -41,24 +40,22 @@ const NotePage = () => {
     note.body.toLowerCase().includes(searchData.toLowerCase())
   );
 
-  // swal delete function
   const deleteNote = (id: string) => {
     Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      title: language === 'id' ? 'Apakah Anda yakin?' : 'Are you sure?',
+      text: language === 'id' ? 'Anda tidak akan dapat mengembalikannya!' : "You won't be able to revert this!",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: language === 'id' ? 'Ya, hapus!' : 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
         setNotes(prevNotes => prevNotes.filter(note => note.id !== id));
-
         Swal.fire({
           icon: 'success',
-          title: 'Deleted!',
-          text: 'Your note has been deleted.',
+          title: language === 'id' ? 'Dihapus!' : 'Deleted!',
+          text: language === 'id' ? 'Catatan Anda telah dihapus.' : 'Your note has been deleted.',
           timer: 1500,
           showConfirmButton: false,
         });
@@ -66,7 +63,6 @@ const NotePage = () => {
     });
   };
 
-  // archive notes function
   const toggleArchiveNote = (id: string) => {
     setNotes(prevNotes =>
       prevNotes.map(note =>
@@ -75,27 +71,23 @@ const NotePage = () => {
     );
   };
 
-  // function edit notes
   const handleEditNote = (note: Note) => {
     setNoteToEdit(note);
     setIsModalOpen(true);
   };
-  
 
-  // function logout
   const handleLogout = () => {
     localStorage.removeItem('token');
     Swal.fire({
       icon: 'success',
-      title: 'Logged Out',
-      text: 'You have been logged out successfully.',
+      title: language === 'id' ? 'Keluar' : 'Logged Out',
+      text: language === 'id' ? 'Anda telah berhasil keluar.' : 'You have been logged out successfully.',
       timer: 1500,
       showConfirmButton: false,
     }).then(() => {
       navigate('/'); 
     });
   };
-
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-5  dark:bg-blue-950">
@@ -136,6 +128,13 @@ const NotePage = () => {
         >
           Logout
         </button>
+        {/* Button Ubah Bahasa */}
+        <button
+          className="mt-4 md:mt-0 ml-0 md:ml-5 px-4 py-2 md:px-6 md:py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition-transform transform hover:scale-105"
+          onClick={toggleLanguage}
+        >
+          {language === 'id' ? 'English' : 'Bahasa Indonesia'}
+        </button>
       </div>
 
       {/* active notes */}
@@ -148,7 +147,7 @@ const NotePage = () => {
       />
 
       {/* archived notes */}
-      <h2 className="text-xl font-semibold mt-8 mb-4 dark: text-gray-300">Archived Notes</h2>
+      <h2 className="text-xl font-semibold mt-8 mb-4 dark:text-gray-300">Archived Notes</h2>
       <NoteList
         notes={filteredArchivedNotes}
         onDeleteNote={deleteNote}
@@ -176,29 +175,31 @@ function App() {
   };
 
   return (
-    <ThemeProvider>
-      <Router>
-        <div className={isDarkMode ? 'dark' : ''}>
-          <Routes>
-            {/* Halaman Autentikasi sebagai root */}
-            <Route path="/" element={<AuthPage />} />
-            {/* Halaman Notes */}
-            <Route path="/notes" element={<NotePage />} />
-            {/* Detail Notes */}
-            <Route
-              path="/notes/:noteId"
-              element={<NoteDetailPage notes={notes} />} 
-            />
-          </Routes>
-          <button
-            className="fixed bottom-4 right-4 p-3 bg-gray-800 text-white rounded-full shadow-lg"
-            onClick={toggleDarkMode}
-          >
-            {isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
-          </button>
-        </div>
-      </Router>
-    </ThemeProvider>
+    <LanguageProvider>
+      <ThemeProvider>
+        <Router>
+          <div className={isDarkMode ? 'dark' : ''}>
+            <Routes>
+              {/* Halaman Autentikasi sebagai root */}
+              <Route path="/" element={<AuthPage />} />
+              {/* Halaman Notes */}
+              <Route path="/notes" element={<NotePage />} />
+              {/* Detail Notes */}
+              <Route
+                  path="/notes/:noteId"
+                  element={<NoteDetailPage notes={notes} />}
+              />
+            </Routes>
+            <button
+              className="fixed bottom-4 right-4 p-3 bg-gray-800 text-white rounded-full shadow-lg"
+              onClick={toggleDarkMode}
+            >
+              {isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+            </button>
+          </div>
+        </Router>
+      </ThemeProvider>
+    </LanguageProvider>
   );
 }
 
