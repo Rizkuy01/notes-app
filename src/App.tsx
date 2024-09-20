@@ -130,7 +130,7 @@ const NotePage = () => {
         </button>
         {/* Button Ubah Bahasa */}
         <button
-          className="mt-4 md:mt-0 ml-0 md:ml-5 px-4 py-2 md:px-6 md:py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition-transform transform hover:scale-105"
+          className="hidden mt-4 md:mt-0 ml-0 md:ml-5 px-4 py-2 md:px-6 md:py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition-transform transform hover:scale-105"
           onClick={toggleLanguage}
         >
           {language === 'id' ? 'English' : 'Bahasa Indonesia'}
@@ -180,9 +180,8 @@ function App() {
         <Router>
           <div className={isDarkMode ? 'dark' : ''}>
             <Routes>
-              {/* Halaman Autentikasi sebagai root */}
               <Route path="/" element={<AuthPage />} />
-              {/* Halaman Notes */}
+              {/* Notes */}
               <Route path="/notes" element={<NotePage />} />
               {/* Detail Notes */}
               <Route

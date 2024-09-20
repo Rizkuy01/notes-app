@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Swal from 'sweetalert2';
+import { createNote, updateNote } from '../api/AuthService';
 
 interface NoteFormModalProps {
   setNotes: React.Dispatch<React.SetStateAction<Note[]>>;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  noteToEdit?: Note; 
+  noteToEdit?: Note;
 }
 
-// Define the Note interface (if not already defined in a global types file)
 interface Note {
   id: string;
   title: string;
@@ -20,50 +20,74 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
   const [title, setTitle] = useState<string>(noteToEdit ? noteToEdit.title : '');
   const [body, setBody] = useState<string>(noteToEdit ? noteToEdit.body : '');
   const [charCount, setCharCount] = useState<number>(50 - (noteToEdit ? noteToEdit.title.length : 0));
+  const [loading, setLoading] = useState<boolean>(false);
 
-  // handle submit
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     if (noteToEdit) {
       // edit note
-      setNotes(prevNotes =>
-        prevNotes.map(note =>
-          note.id === noteToEdit.id
-            ? { ...note, title, body }
-            : note
-        )
-      );
+      try {
+        setLoading(true);
+        const response = await updateNote(noteToEdit.id, title, body);
+        
+        setNotes(prevNotes =>
+          prevNotes.map(note =>
+            note.id === noteToEdit.id
+              ? { ...note, title: response.data.note.title, body: response.data.note.body }
+              : note
+          )
+        );
 
-      Swal.fire({
-        icon: 'success',
-        title: 'Note Updated!',
-        text: 'Your note has been successfully updated.',
-        timer: 1500,
-        showConfirmButton: false,
-      });
+        Swal.fire({
+          icon: 'success',
+          title: 'Note Updated!',
+          text: 'Your note has been successfully updated.',
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } catch (error) {
+        console.error(error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'Failed to update note. Please try again.',
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } finally {
+        setLoading(false);
+      }
     } else {
       // add note
-      const newNote: Note = {
-        id: "SHP" + new Date().toISOString(),
-        title,
-        body,
-        createdAt: new Date().toISOString(),
-        archived: false,
-      };
+      try {
+        setLoading(true);
+        const response = await createNote(title, body);
+        
+        setNotes(prevNotes => [response.data.note, ...prevNotes]);
 
-      setNotes(prevNotes => [newNote, ...prevNotes]);
-
-      Swal.fire({
-        icon: 'success',
-        title: 'Note Added!',
-        text: 'Your note has been successfully added.',
-        timer: 1500,
-        showConfirmButton: false,
-      });
+        Swal.fire({
+          icon: 'success',
+          title: 'Note Added!',
+          text: 'Your note has been successfully added.',
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } catch (error) {
+        console.error(error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'Failed to add note. Please try again.',
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } finally {
+        setLoading(false);
+      }
     }
 
-    setIsModalOpen(false); 
+    setIsModalOpen(false);
   };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,6 +114,7 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
               onChange={handleTitleChange}
               placeholder="Enter note title"
               required
+              disabled={loading} // Disable saat loading
             />
             <p className="text-sm text-gray-500 mt-1 text-right">{charCount} characters left</p>
           </div>
@@ -103,6 +128,7 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
               onChange={(e) => setBody(e.target.value)}
               placeholder="Write your note here..."
               required
+              disabled={loading} 
             />
           </div>
 
@@ -111,14 +137,16 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
               type="button"
               className="mr-2 px-5 py-2 bg-gray-300 rounded-lg shadow hover:bg-gray-400 transition-colors"
               onClick={() => setIsModalOpen(false)}
+              disabled={loading} 
             >
               Cancel
             </button>
             <button
               type="submit"
               className="px-5 py-2 bg-green-600 text-white rounded-lg shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105"
+              disabled={loading} 
             >
-              {noteToEdit ? 'Update Note' : 'Add Note'}
+              {loading ? 'Loading...' : (noteToEdit ? 'Update Note' : 'Add Note')}
             </button>
           </div>
         </form>

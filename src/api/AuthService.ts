@@ -1,3 +1,4 @@
+import axios from "axios";
 
 const API_URL = 'https://notes-api-knacademy.vercel.app/api';
 
@@ -98,6 +99,43 @@ export const getUserNotes = async () => {
   }
 
   return [];
+};
+
+
+// Create Note
+export const createNote = async (title: string, body: string) => {
+  const token = localStorage.getItem('token');
+
+  const response = await fetch(`${API_URL}/notes`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ title, body }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to create note');
+  }
+
+  const data = await response.json();
+  return data;
+};
+
+// Edit Note
+export const updateNote = async (noteId: string, title: string, body: string) => {
+  const token = localStorage.getItem('accessToken');
+  const response = await axios.patch(
+    `https://notes-api-knacademy.vercel.app/notes/${noteId}`,
+    { title, body },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
 };
 
 // Logout
