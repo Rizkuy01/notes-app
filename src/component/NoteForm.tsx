@@ -26,15 +26,15 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
     e.preventDefault();
     
     if (noteToEdit) {
-      // edit note
+      // Edit note
       try {
         setLoading(true);
-        const response = await updateNote(noteToEdit.id, title, body);
+        const response = await updateNote(noteToEdit.id, title, body);  // Panggil fungsi updateNote
         
         setNotes(prevNotes =>
           prevNotes.map(note =>
             note.id === noteToEdit.id
-              ? { ...note, title: response.data.note.title, body: response.data.note.body }
+              ? { ...note, title: response.title, body: response.body } // Perbarui state notes
               : note
           )
         );
@@ -59,12 +59,12 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
         setLoading(false);
       }
     } else {
-      // add note
+      // Add new note
       try {
         setLoading(true);
-        const response = await createNote(title, body);
+        const response = await createNote(title, body);  // Panggil fungsi createNote
         
-        setNotes(prevNotes => [response.data.note, ...prevNotes]);
+        setNotes(prevNotes => [response, ...prevNotes]); // Tambahkan note baru ke daftar notes
 
         Swal.fire({
           icon: 'success',
@@ -87,7 +87,7 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
       }
     }
 
-    setIsModalOpen(false);
+    setIsModalOpen(false); // Tutup modal setelah selesai
   };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

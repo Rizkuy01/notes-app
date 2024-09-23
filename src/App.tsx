@@ -4,13 +4,13 @@ import NoteFormModal from './component/NoteForm';
 import NoteDetailPage from './component/NoteDetailPage';
 import Footer from './component/Footer';
 import { getInitialData } from './utilities/data';
-import { ThemeProvider } from './component/ThemeContext';
+import { ThemeProvider } from './context/ThemeContext';
 import HeroImage from './aset/hero.png';
 import Swal from 'sweetalert2';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import AuthPage from './component/AuthPage';
-import { LanguageProvider, useLanguage } from './component/LanguageContext';
+import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import './index.css';
 
 // Define Note type
@@ -28,7 +28,7 @@ const NotePage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [noteToEdit, setNoteToEdit] = useState<Note | null>(null);
   const navigate = useNavigate();
-  const { language, toggleLanguage } = useLanguage(); // Mengambil bahasa dan fungsi toggle dari context
+  const { language, toggleLanguage } = useLanguage(); 
 
   const activeNotes = notes.filter(note => !note.archived);
   const archivedNotes = notes.filter(note => note.archived);

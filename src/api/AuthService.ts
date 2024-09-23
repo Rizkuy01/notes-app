@@ -124,19 +124,54 @@ export const createNote = async (title: string, body: string) => {
 };
 
 // Edit Note
-export const updateNote = async (noteId: string, title: string, body: string) => {
-  const token = localStorage.getItem('accessToken');
-  const response = await axios.patch(
-    `https://notes-api-knacademy.vercel.app/notes/${noteId}`,
-    { title, body },
-    {
+// export const updateNote = async (noteId: string, title: string, body: string) => {
+//   const token = localStorage.getItem('accessToken');
+//   const response = await axios.patch(
+//     `https://notes-api-knacademy.vercel.app/notes/${noteId}`,
+//     { title, body },
+//     {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     }
+//   );
+//   return response.data;
+// };
+
+// Update Note
+export const updateNote = async (noteId: string, updatedBody: string, body: string) => {
+  const token = localStorage.getItem('token'); // Mengambil token dari localStorage
+
+  if (!token) {
+    console.error('Token is missing');
+    return;
+  }
+
+  try {
+    const response = await fetch(`https://notes-api-knacademy.vercel.app/notes/${noteId}`, {
+      method: 'PATCH',
       headers: {
-        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
       },
+      body: JSON.stringify({ body: updatedBody }),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      console.log('Note updated successfully:', result.data.note);
+      return result.data.note; // Mengembalikan data note yang sudah diupdate
+    } else {
+      console.error('Failed to update note:', result.message);
+      return null;
     }
-  );
-  return response.data;
+  } catch (error) {
+    console.error('Error while updating note:', error);
+    return null;
+  }
 };
+
 
 // Logout
 export const logout = () => {
