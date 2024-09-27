@@ -82,7 +82,7 @@ export const getUserNotes = async () => {
 
   if (!token) {
     console.error('Token is missing');
-    return []; // Kembalikan array kosong jika tidak ada token
+    return []; 
   }
 
   const response = await fetch(`${API_URL}/notes`, {
@@ -97,7 +97,7 @@ export const getUserNotes = async () => {
   }
 
   const data = await response.json();
-  return data.notes || []; // Mengembalikan data notes, atau array kosong jika tidak ada
+  return data.notes || []; 
 };
 
 
@@ -154,13 +154,13 @@ export const updateNote = async (noteId: string, title: string, body: string) =>
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ title, body }), // Mengirim kedua title dan body
+      body: JSON.stringify({ title, body }), 
     });
 
     const result = await response.json();
 
     if (response.ok) {
-      return result; // Mengembalikan respons dari API
+      return result; 
     } else {
       console.error('Failed to update note:', result.message);
       return null;

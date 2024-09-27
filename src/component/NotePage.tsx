@@ -49,7 +49,7 @@ const filteredArchivedNotes = archivedNotes.filter(note =>
         const response = await fetch('https://notes-api-knacademy.vercel.app/api/notes', {
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${token}`, // Authorization header with token
+            Authorization: `Bearer ${token}`, 
             'Content-Type': 'application/json'
           }
         });
@@ -58,7 +58,7 @@ const filteredArchivedNotes = archivedNotes.filter(note =>
         }
         const {data} = await response.json();
         console.log(data);
-        setNotes(data.notes); // Assuming the API response has a `notes` array  
+        setNotes(data.notes); 
       } catch (error) {
         console.error('Error fetching notes:', error);
         Swal.fire({
