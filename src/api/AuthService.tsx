@@ -6,7 +6,7 @@ const API_URL = 'http://notes-api-knacademy.vercel.app/api';
 export const register = async (username: string, email: string, password: string) => {
   const response = await axios.post(`${API_URL}/auth/register`, { username, email, password });
   if (response.data.token) {
-    localStorage.setItem('token', response.data.token); // Simpan token di local storage
+    localStorage.setItem('token', response.data.token);
   }
   return response.data;
 };

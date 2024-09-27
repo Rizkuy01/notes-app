@@ -2,24 +2,26 @@ import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { createNote, updateNote } from '../api/AuthService';
 
-interface NoteFormModalProps {
-  setNotes: React.Dispatch<React.SetStateAction<Note[]>>;
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  noteToEdit?: Note;
-}
-
+// Define Note interface
 interface Note {
-  id: string;
+  _id: string;
   title: string;
   body: string;
   createdAt: string;
   archived: boolean;
 }
 
+// Define NoteFormModalProps interface
+interface NoteFormModalProps {
+  setNotes: React.Dispatch<React.SetStateAction<Note[]>>;
+  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  noteToEdit?: Note | null;
+}
+
 const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen, noteToEdit }) => {
-  const [title, setTitle] = useState<string>(noteToEdit ? noteToEdit.title : '');
-  const [body, setBody] = useState<string>(noteToEdit ? noteToEdit.body : '');
-  const [charCount, setCharCount] = useState<number>(50 - (noteToEdit ? noteToEdit.title.length : 0));
+  const [title, setTitle] = useState<string>(noteToEdit?.title??' '); 
+  const [body, setBody] = useState<string>(noteToEdit?.body ?? '');
+  const [charCount, setCharCount] = useState<number>(50 - (noteToEdit?.title?.length ?? 0));
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -29,12 +31,12 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
       // Edit note
       try {
         setLoading(true);
-        const response = await updateNote(noteToEdit.id, title, body);  // Panggil fungsi updateNote
+        const response = await updateNote(noteToEdit._id, title, body);
         
         setNotes(prevNotes =>
           prevNotes.map(note =>
-            note.id === noteToEdit.id
-              ? { ...note, title: response.title, body: response.body } // Perbarui state notes
+            note._id === noteToEdit._id
+              ? { ...note, title: response.title, body: response.body }
               : note
           )
         );
@@ -62,9 +64,9 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
       // Add new note
       try {
         setLoading(true);
-        const response = await createNote(title, body);  // Panggil fungsi createNote
+        const response = await createNote(title, body); 
         
-        setNotes(prevNotes => [response, ...prevNotes]); // Tambahkan note baru ke daftar notes
+        setNotes(prevNotes => [response, ...prevNotes]);
 
         Swal.fire({
           icon: 'success',
@@ -87,7 +89,7 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
       }
     }
 
-    setIsModalOpen(false); // Tutup modal setelah selesai
+    setIsModalOpen(false);
   };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

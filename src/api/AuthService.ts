@@ -1,9 +1,7 @@
-import axios from "axios";
-
 const API_URL = 'https://notes-api-knacademy.vercel.app/api';
 
 export interface Note {
-  id: string;
+  _id: string;
   title: string;
   body: string;
   createdAt: string;
@@ -82,24 +80,26 @@ export const getUser = async () => {
 export const getUserNotes = async () => {
   const token = localStorage.getItem('token');
 
-  if (token) {
-    const response = await fetch(`${API_URL}/notes`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch notes');
-    }
-
-    const data = await response.json();
-    return data;
+  if (!token) {
+    console.error('Token is missing');
+    return []; // Kembalikan array kosong jika tidak ada token
   }
 
-  return [];
+  const response = await fetch(`${API_URL}/notes`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch notes');
+  }
+
+  const data = await response.json();
+  return data.notes || []; // Mengembalikan data notes, atau array kosong jika tidak ada
 };
+
 
 
 // Create Note
@@ -139,8 +139,8 @@ export const createNote = async (title: string, body: string) => {
 // };
 
 // Update Note
-export const updateNote = async (noteId: string, updatedBody: string, body: string) => {
-  const token = localStorage.getItem('token'); // Mengambil token dari localStorage
+export const updateNote = async (noteId: string, title: string, body: string) => {
+  const token = localStorage.getItem('token');
 
   if (!token) {
     console.error('Token is missing');
@@ -148,20 +148,19 @@ export const updateNote = async (noteId: string, updatedBody: string, body: stri
   }
 
   try {
-    const response = await fetch(`https://notes-api-knacademy.vercel.app/notes/${noteId}`, {
+    const response = await fetch(`${API_URL}/notes/${noteId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ body: updatedBody }),
+      body: JSON.stringify({ title, body }), // Mengirim kedua title dan body
     });
 
     const result = await response.json();
 
     if (response.ok) {
-      console.log('Note updated successfully:', result.data.note);
-      return result.data.note; // Mengembalikan data note yang sudah diupdate
+      return result; // Mengembalikan respons dari API
     } else {
       console.error('Failed to update note:', result.message);
       return null;
@@ -171,6 +170,7 @@ export const updateNote = async (noteId: string, updatedBody: string, body: stri
     return null;
   }
 };
+
 
 
 // Logout
