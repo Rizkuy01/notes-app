@@ -140,12 +140,15 @@ const filteredArchivedNotes = archivedNotes.filter(note =>
       </header>
 
       <div className="flex flex-col md:flex-row justify-between items-center p-2 mb-5 bg-green-600">
-        <button
-          className="px-4 py-2 md:px-6 md:py-3 bg-white text-green-600 rounded-lg shadow-lg  hover:bg-gray-300 focus:ring-4 focus:ring-green-300 transition-transform transform hover:scale-105 mb-4 md:mb-0"
-          onClick={() => setIsModalOpen(true)}
-        >
-          + Add Notes
-        </button>
+      <button
+        className="px-4 py-2 md:px-6 md:py-3 bg-white text-green-600 rounded-lg shadow-lg  hover:bg-gray-300 focus:ring-4 focus:ring-green-300 transition-transform transform hover:scale-105 mb-4 md:mb-0"
+        onClick={() => {
+          setNoteToEdit(null);
+          setIsModalOpen(true);
+        }}>
+        + Add Notes
+      </button>
+
         <div className="relative w-full md:w-auto">
           <AiOutlineSearch className="absolute left-3 top-2 text-gray-500" />
           <input
@@ -191,9 +194,14 @@ const filteredArchivedNotes = archivedNotes.filter(note =>
       />
 
       {/* modal add notes */}
-      {isModalOpen && noteToEdit && (
-        <NoteFormModal setNotes={setNotes} setIsModalOpen={setIsModalOpen} noteToEdit={noteToEdit} />
+      {isModalOpen && (
+        <NoteFormModal
+          setNotes={setNotes}
+          setIsModalOpen={setIsModalOpen}
+          noteToEdit={noteToEdit}  // ini akan null jika sedang menambahkan catatan baru
+        />
       )}
+
       <Footer />
     </div>
   );

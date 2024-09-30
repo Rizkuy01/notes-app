@@ -102,10 +102,17 @@ export const getUserNotes = async () => {
 
 
 
-// Create Note
-export const createNote = async (title: string, body: string) => {
+
+// Create Note function
+export const createNote = async (title: string, body: string): Promise<Note> => {
   const token = localStorage.getItem('token');
 
+  // Check if token is present
+  if (!token) {
+    throw new Error('User not authenticated');
+  }
+
+  // Make API request to create a new note
   const response = await fetch(`${API_URL}/notes`, {
     method: 'POST',
     headers: {
@@ -115,12 +122,22 @@ export const createNote = async (title: string, body: string) => {
     body: JSON.stringify({ title, body }),
   });
 
+  // Check if the response is OK
   if (!response.ok) {
-    throw new Error('Failed to create note');
+    const errorMessage = await response.text(); // Fetch error message from the server response
+    throw new Error(`Failed to create note: ${errorMessage}`);
   }
 
+  // Parse response data
   const data = await response.json();
-  return data;
+
+  // Check if response contains the required fields (title and body)
+  if (!data || !data._id || !data.title || !data.body) {
+    throw new Error('Invalid response format from server');
+  }
+
+  // Return the new note
+  return data as Note;
 };
 
 // Edit Note

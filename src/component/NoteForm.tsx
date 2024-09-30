@@ -19,7 +19,7 @@ interface NoteFormModalProps {
 }
 
 const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen, noteToEdit }) => {
-  const [title, setTitle] = useState<string>(noteToEdit?.title??' '); 
+  const [title, setTitle] = useState<string>(noteToEdit?.title??''); 
   const [body, setBody] = useState<string>(noteToEdit?.body ?? '');
   const [charCount, setCharCount] = useState<number>(50 - (noteToEdit?.title?.length ?? 0));
   const [loading, setLoading] = useState<boolean>(false);
