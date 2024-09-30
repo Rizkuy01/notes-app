@@ -36,7 +36,7 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
         setNotes(prevNotes =>
           prevNotes.map(note =>
             note._id === noteToEdit._id
-              ? { ...note, title: response.title, body: response.body }
+              ? { ...note,_id:response._id, title: response.title, body: response.body }
               : note
           )
         );
@@ -116,7 +116,7 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
               onChange={handleTitleChange}
               placeholder="Enter note title"
               required
-              disabled={loading} // Disable saat loading
+              disabled={loading}
             />
             <p className="text-sm text-gray-500 mt-1 text-right">{charCount} characters left</p>
           </div>

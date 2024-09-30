@@ -8,6 +8,11 @@ export interface Note {
   archived: boolean;
 }
 
+interface DeleteResponse {
+  success: boolean;
+  message: string;
+}
+
 // Register
 export const register = async (username: string, email: string, password: string) => {
   const response = await fetch(`${API_URL}/auth/register`, {
@@ -106,13 +111,10 @@ export const getUserNotes = async () => {
 // Create Note function
 export const createNote = async (title: string, body: string): Promise<Note> => {
   const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('User not authenticated');
+    }
 
-  // Check if token is present
-  if (!token) {
-    throw new Error('User not authenticated');
-  }
-
-  // Make API request to create a new note
   const response = await fetch(`${API_URL}/notes`, {
     method: 'POST',
     headers: {
@@ -121,24 +123,44 @@ export const createNote = async (title: string, body: string): Promise<Note> => 
     },
     body: JSON.stringify({ title, body }),
   });
+    if (!response.ok) {
+      const errorMessage = await response.text(); 
+      throw new Error(`Failed to create note: ${errorMessage}`);
+    }
+  const {data} = await response.json();
+    if (!data.note || !data.note._id || !data.note.title || !data.note.body) {
+      throw new Error('Invalid response format from server');
+    }
 
-  // Check if the response is OK
-  if (!response.ok) {
-    const errorMessage = await response.text(); // Fetch error message from the server response
-    throw new Error(`Failed to create note: ${errorMessage}`);
-  }
-
-  // Parse response data
-  const data = await response.json();
-
-  // Check if response contains the required fields (title and body)
-  if (!data || !data._id || !data.title || !data.body) {
-    throw new Error('Invalid response format from server');
-  }
-
-  // Return the new note
-  return data as Note;
+  return data.note as Note;
 };
+
+// Delete Note
+  export const deleteNote = async (id: string): Promise<DeleteResponse> => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('User not authenticated');
+    }
+
+    const response = await fetch(`${API_URL}/notes/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(`Failed to delete note: ${errorMessage}`);
+    }
+
+    const data = await response.json();
+    if (!data) {
+      throw new Error('Failed to delete note. Server did not confirm the deletion.');
+    }
+
+    return data as DeleteResponse;
+  };
 
 // Edit Note
 // export const updateNote = async (noteId: string, title: string, body: string) => {
@@ -156,7 +178,7 @@ export const createNote = async (title: string, body: string): Promise<Note> => 
 // };
 
 // Update Note
-export const updateNote = async (noteId: string, title: string, body: string) => {
+export const updateNote = async (_id: string, title: string, body: string) => {
   const token = localStorage.getItem('token');
 
   if (!token) {
@@ -165,7 +187,7 @@ export const updateNote = async (noteId: string, title: string, body: string) =>
   }
 
   try {
-    const response = await fetch(`${API_URL}/notes/${noteId}`, {
+    const response = await fetch(`${API_URL}/notes/${_id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

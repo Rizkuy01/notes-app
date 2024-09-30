@@ -7,6 +7,7 @@ import HeroImage from '../aset/hero.png';
 import { AiOutlineSearch } from 'react-icons/ai';
 import NoteFormModal from './NoteForm';
 import { useNavigate } from 'react-router-dom';
+import { deleteNote as deleteNoteAPI } from '../api/AuthService';
 
 // Define Note type
 interface Note {
@@ -27,19 +28,18 @@ const NotePage: React.FC<NotePageProps> = ({ notes, setNotes }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [noteToEdit, setNoteToEdit] = useState<Note | null>(null);
   const { language, toggleLanguage } = useLanguage();
+  const navigate = useNavigate();
 
   const activeNotes = notes ? notes.filter(note => !note.archived) : [];
   const archivedNotes = notes ? notes.filter(note => note.archived) : [];
 
   const filteredActiveNotes = activeNotes.filter(note =>
-  (note.body?.toLowerCase() || '').includes(searchData.toLowerCase())
-);
-const filteredArchivedNotes = archivedNotes.filter(note =>
-  (note.body?.toLowerCase() || '').includes(searchData.toLowerCase())
-);
+    (note.body?.toLowerCase() || '').includes(searchData.toLowerCase())
+  );
 
-
-  const navigate = useNavigate();
+  const filteredArchivedNotes = archivedNotes.filter(note =>
+    (note.body?.toLowerCase() || '').includes(searchData.toLowerCase())
+  );
 
   // useEffect to fetch notes from API
   useEffect(() => {
@@ -49,16 +49,16 @@ const filteredArchivedNotes = archivedNotes.filter(note =>
         const response = await fetch('https://notes-api-knacademy.vercel.app/api/notes', {
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${token}`, 
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         });
         if (!response.ok) {
           throw new Error('Failed to fetch notes');
         }
-        const {data} = await response.json();
+        const { data } = await response.json();
         console.log(data);
-        setNotes(data.notes); 
+        setNotes(data.notes);
       } catch (error) {
         console.error('Error fetching notes:', error);
         Swal.fire({
@@ -72,8 +72,9 @@ const filteredArchivedNotes = archivedNotes.filter(note =>
     fetchNotesFromAPI();
   }, [setNotes, language]);
 
-  const deleteNote = (id: string) => {
-    Swal.fire({
+  // Delete note function with API call
+  const handleDeleteNote = async (id: string) => {
+    const result = await Swal.fire({
       title: language === 'id' ? 'Apakah Anda yakin?' : 'Are you sure?',
       text: language === 'id' ? 'Anda tidak akan dapat mengembalikannya!' : "You won't be able to revert this!",
       icon: 'warning',
@@ -81,8 +82,11 @@ const filteredArchivedNotes = archivedNotes.filter(note =>
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
       confirmButtonText: language === 'id' ? 'Ya, hapus!' : 'Yes, delete it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteNoteAPI(id); 
         setNotes(prevNotes => prevNotes.filter(note => note._id !== id));
         Swal.fire({
           icon: 'success',
@@ -91,8 +95,15 @@ const filteredArchivedNotes = archivedNotes.filter(note =>
           timer: 1500,
           showConfirmButton: false,
         });
+      } catch (error) {
+        console.error('Error deleting note:', error);
+        Swal.fire({
+          icon: 'error',
+          title: language === 'id' ? 'Gagal Menghapus' : 'Failed to Delete',
+          text: language === 'id' ? 'Tidak dapat menghapus catatan.' : 'Unable to delete note.',
+        });
       }
-    });
+    }
   };
 
   const toggleArchiveNote = (id: string) => {
@@ -104,10 +115,10 @@ const filteredArchivedNotes = archivedNotes.filter(note =>
   };
 
   const handleEditNote = (note: Note) => {
-    if (note){
-    setNoteToEdit(note);
-    setIsModalOpen(true);
-      }
+    if (note) {
+      setNoteToEdit(note);
+      setIsModalOpen(true);
+    }
   };
 
   const handleLogout = () => {
@@ -119,12 +130,12 @@ const filteredArchivedNotes = archivedNotes.filter(note =>
       timer: 1500,
       showConfirmButton: false,
     }).then(() => {
-      navigate('/'); 
+      navigate('/');
     });
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 md:p-5  dark:bg-blue-950">
+    <div className="min-h-screen bg-gray-100 p-4 md:p-5 dark:bg-blue-950">
       <header className="relative mb-6 md:mb-10">
         <img
           src={HeroImage}
@@ -140,14 +151,15 @@ const filteredArchivedNotes = archivedNotes.filter(note =>
       </header>
 
       <div className="flex flex-col md:flex-row justify-between items-center p-2 mb-5 bg-green-600">
-      <button
-        className="px-4 py-2 md:px-6 md:py-3 bg-white text-green-600 rounded-lg shadow-lg  hover:bg-gray-300 focus:ring-4 focus:ring-green-300 transition-transform transform hover:scale-105 mb-4 md:mb-0"
-        onClick={() => {
-          setNoteToEdit(null);
-          setIsModalOpen(true);
-        }}>
-        + Add Notes
-      </button>
+        <button
+          className="px-4 py-2 md:px-6 md:py-3 bg-white text-green-600 rounded-lg shadow-lg hover:bg-gray-300 focus:ring-4 focus:ring-green-300 transition-transform transform hover:scale-105 mb-4 md:mb-0"
+          onClick={() => {
+            setNoteToEdit(null);
+            setIsModalOpen(true);
+          }}
+        >
+          + Add Notes
+        </button>
 
         <div className="relative w-full md:w-auto">
           <AiOutlineSearch className="absolute left-3 top-2 text-gray-500" />
@@ -177,7 +189,7 @@ const filteredArchivedNotes = archivedNotes.filter(note =>
       {/* active notes */}
       <NoteList
         notes={filteredActiveNotes}
-        onDeleteNote={deleteNote}
+        onDeleteNote={handleDeleteNote}
         onToggleArchive={toggleArchiveNote}
         onEditNote={handleEditNote}
         isArchived={false}
@@ -187,7 +199,7 @@ const filteredArchivedNotes = archivedNotes.filter(note =>
       <h2 className="text-xl font-semibold mt-8 mb-4 dark:text-gray-300">Archived Notes</h2>
       <NoteList
         notes={filteredArchivedNotes}
-        onDeleteNote={deleteNote}
+        onDeleteNote={handleDeleteNote}
         onToggleArchive={toggleArchiveNote}
         onEditNote={handleEditNote}
         isArchived={true}
@@ -198,7 +210,7 @@ const filteredArchivedNotes = archivedNotes.filter(note =>
         <NoteFormModal
           setNotes={setNotes}
           setIsModalOpen={setIsModalOpen}
-          noteToEdit={noteToEdit}  // ini akan null jika sedang menambahkan catatan baru
+          noteToEdit={noteToEdit}
         />
       )}
 
