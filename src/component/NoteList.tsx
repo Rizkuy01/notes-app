@@ -16,6 +16,15 @@ interface NoteListProps {
   isArchived: boolean;
 }
 
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: '2-digit',
+  });
+}
+
 function NoteList({ notes, onDeleteNote, onToggleArchive, onEditNote, isArchived }: NoteListProps) {
   const navigate = useNavigate();
   
@@ -33,7 +42,7 @@ function NoteList({ notes, onDeleteNote, onToggleArchive, onEditNote, isArchived
             onClick={() => navigate(`/notes/${note._id}`)}
           >
             <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-2">{note.title}</h3>
-            <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">{(note.createdAt)}</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">{formatDate(note.createdAt)}</p>
             <p className="text-gray-700 dark:text-gray-300 mb-4">{note.body}</p>
 
             <div className="flex justify-between">

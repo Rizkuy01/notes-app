@@ -19,77 +19,66 @@ interface NoteFormModalProps {
 }
 
 const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen, noteToEdit }) => {
-  const [title, setTitle] = useState<string>(noteToEdit?.title??''); 
+  const [title, setTitle] = useState<string>(noteToEdit?.title ?? '');
   const [body, setBody] = useState<string>(noteToEdit?.body ?? '');
   const [charCount, setCharCount] = useState<number>(50 - (noteToEdit?.title?.length ?? 0));
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    if (noteToEdit) {
-      // Edit note
-      try {
-        setLoading(true);
-        const response = await updateNote(noteToEdit._id, title, body);
-        
-        setNotes(prevNotes =>
-          prevNotes.map(note =>
-            note._id === noteToEdit._id
-              ? { ...note,_id:response._id, title: response.title, body: response.body }
-              : note
-          )
-        );
 
-        Swal.fire({
-          icon: 'success',
-          title: 'Note Updated!',
-          text: 'Your note has been successfully updated.',
-          timer: 1500,
-          showConfirmButton: false,
-        });
-      } catch (error) {
-        console.error(error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error!',
-          text: 'Failed to update note. Please try again.',
-          timer: 1500,
-          showConfirmButton: false,
-        });
-      } finally {
-        setLoading(false);
+    try {
+      setLoading(true);
+      if (noteToEdit) {
+        // Update note
+        const response = await updateNote(noteToEdit._id, noteToEdit.title, noteToEdit.body);
+        if (response) {
+          setNotes(prevNotes =>
+            prevNotes.map(note =>
+              note._id === noteToEdit._id
+                ? { ...note, title: response.notes.title, body: response.notes.body } 
+                : note
+            )
+          );
+          Swal.fire({
+            icon: 'success',
+            title: 'Note Updated!',
+            text: 'Your note has been successfully updated.',
+            timer: 1500,
+            showConfirmButton: false,
+          });
+        } else {
+          throw new Error('Failed to update note');
+        }
+      } else {
+        // Add new note
+        const response = await createNote(title, body);
+        if (response) {
+          setNotes(prevNotes => [response, ...prevNotes]);
+          Swal.fire({
+            icon: 'success',
+            title: 'Note Added!',
+            text: 'Your note has been successfully added.',
+            timer: 1500,
+            showConfirmButton: false,
+          });
+        } else {
+          throw new Error('Failed to add note');
+        }
       }
-    } else {
-      // Add new note
-      try {
-        setLoading(true);
-        const response = await createNote(title, body); 
-        
-        setNotes(prevNotes => [response, ...prevNotes]);
-
-        Swal.fire({
-          icon: 'success',
-          title: 'Note Added!',
-          text: 'Your note has been successfully added.',
-          timer: 1500,
-          showConfirmButton: false,
-        });
-      } catch (error) {
-        console.error(error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error!',
-          text: 'Failed to add note. Please try again.',
-          timer: 1500,
-          showConfirmButton: false,
-        });
-      } finally {
-        setLoading(false);
-      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'Something went wrong. Please try again.',
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } finally {
+      setLoading(false);
+      setIsModalOpen(false);
     }
-
-    setIsModalOpen(false);
   };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,7 +119,7 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
               onChange={(e) => setBody(e.target.value)}
               placeholder="Write your note here..."
               required
-              disabled={loading} 
+              disabled={loading}
             />
           </div>
 
@@ -139,16 +128,16 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
               type="button"
               className="mr-2 px-5 py-2 bg-gray-300 rounded-lg shadow hover:bg-gray-400 transition-colors"
               onClick={() => setIsModalOpen(false)}
-              disabled={loading} 
+              disabled={loading}
             >
               Cancel
             </button>
             <button
               type="submit"
               className="px-5 py-2 bg-green-600 text-white rounded-lg shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105"
-              disabled={loading} 
+              disabled={loading}
             >
-              {loading ? 'Loading...' : (noteToEdit ? 'Update Note' : 'Add Note')}
+              {loading ? 'Loading...' : noteToEdit ? 'Update Note' : 'Add Note'}
             </button>
           </div>
         </form>

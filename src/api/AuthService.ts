@@ -136,13 +136,13 @@ export const createNote = async (title: string, body: string): Promise<Note> => 
 };
 
 // Delete Note
-  export const deleteNote = async (id: string): Promise<DeleteResponse> => {
+  export const deleteNote = async (_id: string): Promise<DeleteResponse> => {
     const token = localStorage.getItem('token');
     if (!token) {
       throw new Error('User not authenticated');
     }
 
-    const response = await fetch(`${API_URL}/notes/${id}`, {
+    const response = await fetch(`${API_URL}/notes/${_id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -152,6 +152,8 @@ export const createNote = async (title: string, body: string): Promise<Note> => 
     if (!response.ok) {
       const errorMessage = await response.text();
       throw new Error(`Failed to delete note: ${errorMessage}`);
+    } else {
+      console.log('Making request to:', `${API_URL}/notes/${_id}`);
     }
 
     const data = await response.json();
@@ -163,10 +165,10 @@ export const createNote = async (title: string, body: string): Promise<Note> => 
   };
 
 // Edit Note
-// export const updateNote = async (noteId: string, title: string, body: string) => {
+// export const updateNote = async (_id: string, title: string, body: string) => {
 //   const token = localStorage.getItem('accessToken');
 //   const response = await axios.patch(
-//     `https://notes-api-knacademy.vercel.app/notes/${noteId}`,
+//     `https://notes-api-knacademy.vercel.app/api/notes/${_id}`,
 //     { title, body },
 //     {
 //       headers: {
@@ -187,16 +189,26 @@ export const updateNote = async (_id: string, title: string, body: string) => {
   }
 
   try {
+    console.log('Making request to:', `${API_URL}/notes/${_id}`);
+    console.log('Token being used:', token);
+
     const response = await fetch(`${API_URL}/notes/${_id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
+      mode: 'cors',
       body: JSON.stringify({ title, body }), 
     });
+    console.log('Response status:', response.status);
+
+    if (!response.ok) {
+      console.error('Error status:', response.status);
+    }
 
     const result = await response.json();
+    console.log('API response:', result);
 
     if (response.ok) {
       return result; 
@@ -205,10 +217,13 @@ export const updateNote = async (_id: string, title: string, body: string) => {
       return null;
     }
   } catch (error) {
-    console.error('Error while updating note:', error);
+    console.error('Error while updating note (failed to fetch):', error);
     return null;
   }
 };
+
+
+
 
 
 
