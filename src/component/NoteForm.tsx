@@ -26,17 +26,17 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+  
     try {
       setLoading(true);
       if (noteToEdit) {
         // Update note
-        const response = await updateNote(noteToEdit._id, noteToEdit.title, noteToEdit.body);
+        const response = await updateNote(noteToEdit._id, title, body); 
         if (response) {
           setNotes(prevNotes =>
             prevNotes.map(note =>
               note._id === noteToEdit._id
-                ? { ...note, title: response.notes.title, body: response.notes.body } 
+                ? { ...note, title, body} 
                 : note
             )
           );
@@ -52,7 +52,7 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
         }
       } else {
         // Add new note
-        const response = await createNote(title, body);
+        const response = await createNote(title, body); 
         if (response) {
           setNotes(prevNotes => [response, ...prevNotes]);
           Swal.fire({
@@ -80,7 +80,7 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
       setIsModalOpen(false);
     }
   };
-
+  
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (value.length <= 50) {

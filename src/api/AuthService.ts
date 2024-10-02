@@ -55,6 +55,7 @@ export const login = async (email: string, password: string) => {
   if (data.token) {
     localStorage.setItem('token', data.token);
   }
+  console.log(email);
   return data;
 };
 
@@ -164,33 +165,14 @@ export const createNote = async (title: string, body: string): Promise<Note> => 
     return data as DeleteResponse;
   };
 
-// Edit Note
-// export const updateNote = async (_id: string, title: string, body: string) => {
-//   const token = localStorage.getItem('accessToken');
-//   const response = await axios.patch(
-//     `https://notes-api-knacademy.vercel.app/api/notes/${_id}`,
-//     { title, body },
-//     {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     }
-//   );
-//   return response.data;
-// };
-
 // Update Note
 export const updateNote = async (_id: string, title: string, body: string) => {
   const token = localStorage.getItem('token');
 
-  if (!token) {
+  if (!token) { 
     console.error('Token is missing');
     return;
   }
-
-  try {
-    console.log('Making request to:', `${API_URL}/notes/${_id}`);
-    console.log('Token being used:', token);
 
     const response = await fetch(`${API_URL}/notes/${_id}`, {
       method: 'PATCH',
@@ -216,10 +198,6 @@ export const updateNote = async (_id: string, title: string, body: string) => {
       console.error('Failed to update note:', result.message);
       return null;
     }
-  } catch (error) {
-    console.error('Error while updating note (failed to fetch):', error);
-    return null;
-  }
 };
 
 
