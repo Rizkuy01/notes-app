@@ -106,9 +106,6 @@ export const getUserNotes = async () => {
   return data.notes || []; 
 };
 
-
-
-
 // Create Note function
 export const createNote = async (title: string, body: string): Promise<Note> => {
   const token = localStorage.getItem('token');
@@ -137,33 +134,33 @@ export const createNote = async (title: string, body: string): Promise<Note> => 
 };
 
 // Delete Note
-  export const deleteNote = async (_id: string): Promise<DeleteResponse> => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      throw new Error('User not authenticated');
-    }
+export const deleteNote = async (_id: string): Promise<DeleteResponse> => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('User not authenticated');
+  }
 
-    const response = await fetch(`${API_URL}/notes/${_id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (!response.ok) {
-      const errorMessage = await response.text();
-      throw new Error(`Failed to delete note: ${errorMessage}`);
-    } else {
-      console.log('Making request to:', `${API_URL}/notes/${_id}`);
-    }
+  const response = await fetch(`${API_URL}/notes/${_id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    const errorMessage = await response.text();
+    throw new Error(`Failed to delete note: ${errorMessage}`);
+  } else {
+    console.log('Making request to:', `${API_URL}/notes/${_id}`);
+  }
 
-    const data = await response.json();
-    if (!data) {
-      throw new Error('Failed to delete note. Server did not confirm the deletion.');
-    }
+  const data = await response.json();
+  if (!data) {
+    throw new Error('Failed to delete note. Server did not confirm the deletion.');
+  }
 
-    return data as DeleteResponse;
-  };
+  return data as DeleteResponse;
+};
 
 // Update Note
 export const updateNote = async (_id: string, title: string, body: string) => {
@@ -200,10 +197,54 @@ export const updateNote = async (_id: string, title: string, body: string) => {
     }
 };
 
+// Get Archived Notes
+export const getArchivedNotes = async () => {
+  const token = localStorage.getItem('token');
 
+  if (!token) {
+    console.error('Token is missing');
+    return [];
+  }
 
+  const response = await fetch(`${API_URL}/notes/archived`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
+  if (!response.ok) {
+    throw new Error('Failed to fetch archived notes');
+  }
 
+  const { data } = await response.json();
+  return data.notes || [];
+};
+
+// Toggle Archive Note
+export const toggleArchiveNote = async (_id: string) => {
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    throw new Error('User not authenticated');
+  }
+
+  const response = await fetch(`${API_URL}/notes/${_id}/archive`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const errorMessage = await response.text();
+    throw new Error(`Failed to toggle archive status: ${errorMessage}`);
+  }
+
+  const data = await response.json();
+  return data;
+};
 
 // Logout
 export const logout = () => {

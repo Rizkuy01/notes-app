@@ -20,9 +20,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const getInitialTheme = () => {
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem('theme');
-      return savedTheme === 'light';
+      return savedTheme === 'light'; // Memastikan jika 'dark', kembalikan true
     }
-    return false;
+    return false; // Default ke light mode
   };
 
   const [isDarkMode, setIsDarkMode] = useState<boolean>(getInitialTheme);
