@@ -106,7 +106,7 @@ export const getUserNotes = async () => {
   return data.notes || []; 
 };
 
-// Create Note function
+// Create Note
 export const createNote = async (title: string, body: string): Promise<Note> => {
   const token = localStorage.getItem('token');
     if (!token) {
@@ -197,6 +197,30 @@ export const updateNote = async (_id: string, title: string, body: string) => {
     }
 };
 
+// Detail Note
+export const fetchNoteDetail = async (noteId: string, token: string | null) => {
+  if (!token) {
+    throw new Error('User not authenticated');
+  }
+
+  const response = await fetch(`${API_URL}/notes/${noteId}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const errorMessage = await response.text();
+    throw new Error(`Failed to fetch note details: ${errorMessage}`);
+  }
+
+  const data = await response.json();
+  return data; 
+};
+
+
 // Get Archived Notes
 export const getArchivedNotes = async () => {
   const token = localStorage.getItem('token');
@@ -214,7 +238,7 @@ export const getArchivedNotes = async () => {
   });
 
   if (!response.ok) {
-    throw new Error('Failed to fetch archived notes');
+    throw new Error('Failed tcatatano fetch archived notes');
   }
 
   const { data } = await response.json();
