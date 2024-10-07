@@ -27,12 +27,14 @@ function App() {
         <Router>
           <div className={isDarkMode ? 'dark' : ''}>
             <AppRoutes notes={notes} setNotes={setNotes} />
+            {/* Button Ubah Tema */}
             <button
-              className="fixed bottom-4 right-4 p-3 bg-gray-800 text-white rounded-full shadow-lg"
+              className="fixed bottom-4 right-4 p-3 bg-gray-800 text-white rounded-full shadow-lg hover:bg-gray-600 transition-transform transform hover:scale-105"
               onClick={toggleDarkMode}
             >
               {isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
             </button>
+
           </div>
         </Router>
       </ThemeProvider>

@@ -16,14 +16,14 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Initialize state based on localStorage value
   const getInitialTheme = () => {
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem('theme');
-      return savedTheme === 'light'; // Memastikan jika 'dark', kembalikan true
+      return savedTheme === 'light';
     }
-    return false; // Default ke light mode
+    return false;
   };
+  
 
   const [isDarkMode, setIsDarkMode] = useState<boolean>(getInitialTheme);
 
