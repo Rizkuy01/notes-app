@@ -7,7 +7,7 @@ import HeroImage from '../aset/hero.png';
 import { AiOutlineSearch } from 'react-icons/ai';
 import NoteFormModal from './NoteForm';
 import { useNavigate } from 'react-router-dom';
-import { deleteNote as deleteNoteAPI } from '../api/AuthService';
+import { deleteNote as deleteNoteAPI , toggleArchiveUnarchiveNote as ArchiveNote} from '../api/AuthService';
 
 // Define Note type
 interface Note {
@@ -106,12 +106,23 @@ const NotePage: React.FC<NotePageProps> = ({ notes, setNotes }) => {
     }
   };
 
-  const toggleArchiveNote = (id: string) => {
-    setNotes(prevNotes =>
-      prevNotes.map(note =>
-        note._id === id ? { ...note, archived: !note.archived } : note
-      )
-    );
+  const toggleArchiveUnarchiveNote = async (id: string, uri : 'archived' | 'unarchive' ) => {
+    
+    const response = await ArchiveNote(id, uri); 
+    if (response) {
+      setNotes(prevNotes => prevNotes.filter(note => note._id !== id));
+      
+      console.log(response);
+      Swal.fire({
+        icon: 'success',
+        title: `Notes ${uri}`,
+        text: `Your note has been successfully ${uri}.`,
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } else {
+      throw new Error('Failed to update note');
+    }
   };
 
   const handleEditNote = (note: Note) => {
@@ -192,7 +203,7 @@ const NotePage: React.FC<NotePageProps> = ({ notes, setNotes }) => {
       <NoteList
         notes={filteredActiveNotes}
         onDeleteNote={handleDeleteNote}
-        onToggleArchive={toggleArchiveNote}
+        onToggleArchive={toggleArchiveUnarchiveNote}
         onEditNote={handleEditNote}
         isArchived={false}
       />
@@ -202,7 +213,7 @@ const NotePage: React.FC<NotePageProps> = ({ notes, setNotes }) => {
       <NoteList
         notes={filteredArchivedNotes}
         onDeleteNote={handleDeleteNote}
-        onToggleArchive={toggleArchiveNote}
+        onToggleArchive={toggleArchiveUnarchiveNote}
         onEditNote={handleEditNote}
         isArchived={true}
       />

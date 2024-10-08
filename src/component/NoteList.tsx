@@ -13,7 +13,7 @@ interface Note {
 interface NoteListProps {
   notes: Note[];
   onDeleteNote: (id: string) => void;
-  onToggleArchive: (id: string) => void;
+  onToggleArchive: (id: string, uri: "archived" | "unarchive") => void;
   onEditNote: (note: Note) => void;
   isArchived: boolean;
 }
@@ -81,9 +81,11 @@ function NoteList({ notes, onDeleteNote, onToggleArchive, onEditNote, isArchived
               >
                 Delete
               </button>
+              {/* button archive */}
               <button
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                onClick={(e) => { e.stopPropagation(); onToggleArchive(note._id); }}
+                onClick={(e) => { 
+                  e.stopPropagation(); onToggleArchive(note._id, note.archived ? "archived" : "unarchive"); }}
               >
                 {isArchived ? 'Move to Active' : 'Archive'}
               </button>

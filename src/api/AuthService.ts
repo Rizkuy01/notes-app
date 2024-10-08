@@ -245,6 +245,31 @@ export const getArchivedNotes = async () => {
   return data.notes || [];
 };
 
+// Toggle unArchive Note
+export const toggleArchiveUnarchiveNote = async (_id: string, uri : 'archived' | 'unarchive') => {
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    throw new Error('User not authenticated');
+  }
+
+  const response = await fetch(`${API_URL}/notes/${_id}/${uri}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const errorMessage = await response.text();
+    throw new Error(`Failed to toggle archive status: ${errorMessage}`);
+  }
+
+  const data = await response.json();
+  return data;
+};
+
 // Toggle Archive Note
 export const toggleArchiveNote = async (_id: string) => {
   const token = localStorage.getItem('token');
@@ -254,7 +279,7 @@ export const toggleArchiveNote = async (_id: string) => {
   }
 
   const response = await fetch(`${API_URL}/notes/${_id}/archive`, {
-    method: 'PUT',
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
