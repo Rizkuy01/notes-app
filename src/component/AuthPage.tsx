@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import NoteImage from '../aset/note.png';
+import { toast, ToastContainer } from 'react-toastify';
 
 const API_URL = 'https://notes-api-knacademy.vercel.app/api';
 
@@ -47,6 +48,8 @@ const AuthPage: React.FC = () => {
   };
 
   const handleLogin = async () => {
+    const toastId = toast.loading('Logging in...');
+    
     try {
       const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
@@ -70,9 +73,11 @@ const AuthPage: React.FC = () => {
         showConfirmButton: false,
       });
 
-      // redirect
+      toast.dismiss(toastId); 
       navigate('/notes'); 
     } catch (error) {
+
+      toast.dismiss(toastId);
       Swal.fire({
         icon: 'error',
         title: 'Login Failed',
@@ -149,6 +154,7 @@ const AuthPage: React.FC = () => {
       <div className="flex-1 hidden md:flex items-center justify-center">
         <img src={NoteImage} alt="Note" className="w-[70%] h-full object-cover" />
       </div>
+      <ToastContainer />
     </div>
   );
 };

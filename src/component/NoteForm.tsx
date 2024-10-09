@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { createNote, updateNote } from '../api/AuthService';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Define Note interface
 interface Note {
@@ -26,6 +28,8 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const loadingToastId = toast.loading('Processing...');
   
     try {
       setLoading(true);
@@ -40,6 +44,7 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
                 : note
             )
           );
+          toast.update(loadingToastId, { render: 'Note updated successfully!', type: 'success', isLoading: false, autoClose: 2000 });
           Swal.fire({
             icon: 'success',
             title: 'Note Updated!',
@@ -55,6 +60,7 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
         const response = await createNote(title, body); 
         if (response) {
           setNotes(prevNotes => [response, ...prevNotes]);
+          toast.update(loadingToastId, { render: 'Note added successfully!', type: 'success', isLoading: false, autoClose: 2000 });
           Swal.fire({
             icon: 'success',
             title: 'Note Added!',
@@ -68,6 +74,7 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
       }
     } catch (error) {
       console.error(error);
+      toast.update(loadingToastId, { render: 'Error occurred. Please try again.', type: 'error', isLoading: false, autoClose: 2000 });
       Swal.fire({
         icon: 'error',
         title: 'Error!',
@@ -141,6 +148,7 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
             </button>
           </div>
         </form>
+        <ToastContainer />
       </div>
     </div>
   );

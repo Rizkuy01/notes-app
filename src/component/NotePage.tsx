@@ -8,6 +8,7 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import NoteFormModal from './NoteForm';
 import { useNavigate } from 'react-router-dom';
 import { deleteNote as deleteNoteAPI , toggleArchiveUnarchiveNote as ArchiveNote} from '../api/AuthService';
+import { toast, ToastContainer } from 'react-toastify';
 
 // Define Note type
 interface Note {
@@ -86,8 +87,13 @@ const NotePage: React.FC<NotePageProps> = ({ notes, setNotes }) => {
 
     if (result.isConfirmed) {
       try {
+        toast.info(language === 'id' ? 'Menghapus catatan...' : 'Deleting note...', { autoClose: false });
         await deleteNoteAPI(id); 
         setNotes(prevNotes => prevNotes.filter(note => note._id !== id));
+
+        toast.dismiss();
+        toast.success(language === 'id' ? 'Catatan berhasil dihapus!' : 'Note deleted successfully!');
+
         Swal.fire({
           icon: 'success',
           title: language === 'id' ? 'Dihapus!' : 'Deleted!',
@@ -96,7 +102,11 @@ const NotePage: React.FC<NotePageProps> = ({ notes, setNotes }) => {
           showConfirmButton: false,
         });
       } catch (error) {
+        toast.dismiss();
         console.error('Error deleting note:', error);
+
+        toast.error(language === 'id' ? 'Gagal menghapus catatan.' : 'Failed to delete note.');
+
         Swal.fire({
           icon: 'error',
           title: language === 'id' ? 'Gagal Menghapus' : 'Failed to Delete',
@@ -106,22 +116,21 @@ const NotePage: React.FC<NotePageProps> = ({ notes, setNotes }) => {
     }
   };
 
-  const toggleArchiveUnarchiveNote = async (id: string, uri : 'archived' | 'unarchive' ) => {
-    
-    const response = await ArchiveNote(id, uri); 
-    if (response) {
-      setNotes(prevNotes => prevNotes.filter(note => note._id !== id));
-      
-      console.log(response);
-      Swal.fire({
-        icon: 'success',
-        title: `Notes ${uri}`,
-        text: `Your note has been successfully ${uri}.`,
-        timer: 1500,
-        showConfirmButton: false,
-      });
-    } else {
-      throw new Error('Failed to update note');
+  const toggleArchiveUnarchiveNote = async (id: string, uri: 'archive' | 'unarchive') => {
+    try {
+      toast.info(language === 'id' ? `Mengubah status catatan...` : 'Toggling note status...', { autoClose: false });
+      const response = await ArchiveNote(id, uri);
+      if (response) {
+        setNotes(prevNotes => prevNotes.map(note => (note._id === id ? { ...note, archived: !note.archived } : note)));
+        toast.dismiss();
+        toast.success(language === 'id' ? `Catatan berhasil di${uri === 'archive' ? 'arsipkan' : 'kembalikan'}.` : `Note ${uri === 'archive' ? 'archive' : 'unarchived'} successfully!`);
+      } else {
+        throw new Error('Failed to toggle note');
+      }
+    } catch (error) {
+      toast.dismiss();
+      console.error('Error toggling note archive status:', error);
+      toast.error(language === 'id' ? 'Gagal mengubah status catatan.' : 'Failed to change note status.');
     }
   };
 
@@ -228,6 +237,8 @@ const NotePage: React.FC<NotePageProps> = ({ notes, setNotes }) => {
       )}
 
       <Footer />
+      <ToastContainer />
+
     </div>
   );
 };

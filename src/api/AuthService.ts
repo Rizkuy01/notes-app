@@ -246,7 +246,7 @@ export const getArchivedNotes = async () => {
 };
 
 // Toggle unArchive Note
-export const toggleArchiveUnarchiveNote = async (_id: string, uri : 'archived' | 'unarchive') => {
+export const toggleArchiveUnarchiveNote = async (_id: string, uri : 'archive' | 'unarchive') => {
   const token = localStorage.getItem('token');
 
   if (!token) {

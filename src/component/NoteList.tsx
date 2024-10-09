@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { fetchNoteDetail } from '../api/AuthService';
 import Swal from 'sweetalert2';
+import { toast, ToastContainer } from 'react-toastify';
 
 interface Note {
   _id: string;
@@ -13,7 +14,7 @@ interface Note {
 interface NoteListProps {
   notes: Note[];
   onDeleteNote: (id: string) => void;
-  onToggleArchive: (id: string, uri: "archived" | "unarchive") => void;
+  onToggleArchive: (id: string, uri: "archive" | "unarchive") => void;
   onEditNote: (note: Note) => void;
   isArchived: boolean;
 }
@@ -31,12 +32,15 @@ function NoteList({ notes, onDeleteNote, onToggleArchive, onEditNote, isArchived
   const navigate = useNavigate();
 
   const handleCardClick = async (noteId: string) => {
+    const toastId = toast.loading('Loading note details...');
     try {
       const token = localStorage.getItem('token');
       const response = await fetchNoteDetail(noteId, token); 
       if (response.status === 'success') {
+        toast.dismiss(toastId);
         navigate(`/notes/${noteId}`, { state: { note: response.data.note } }); 
       } else {
+        toast.dismiss(toastId)
         Swal.fire({
           icon: 'error',
           title: 'Failed',
@@ -44,6 +48,7 @@ function NoteList({ notes, onDeleteNote, onToggleArchive, onEditNote, isArchived
         });
       }
     } catch (error) {
+      toast.dismiss(toastId);
       console.error('Error fetching note details:', error);
       Swal.fire({
         icon: 'error',
@@ -69,12 +74,14 @@ function NoteList({ notes, onDeleteNote, onToggleArchive, onEditNote, isArchived
             <p className="text-gray-700 dark:text-gray-300 mb-4">{note.body}</p>
 
             <div className="flex justify-between">
+              {/* button edit */}
               <button
                 className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
                 onClick={(e) => { e.stopPropagation(); onEditNote(note); }}
               >
                 Edit
               </button>
+              {/* button delete */}
               <button
                 className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
                 onClick={(e) => { e.stopPropagation(); onDeleteNote(note._id); }}
@@ -85,7 +92,7 @@ function NoteList({ notes, onDeleteNote, onToggleArchive, onEditNote, isArchived
               <button
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
                 onClick={(e) => { 
-                  e.stopPropagation(); onToggleArchive(note._id, note.archived ? "archived" : "unarchive"); }}
+                  e.stopPropagation(); onToggleArchive(note._id, !note.archived ? "archive" : "unarchive"); }}
               >
                 {isArchived ? 'Move to Active' : 'Archive'}
               </button>
@@ -95,6 +102,7 @@ function NoteList({ notes, onDeleteNote, onToggleArchive, onEditNote, isArchived
       ) : (
         <p className="text-gray-500 dark:text-gray-400">No {isArchived ? 'archived' : 'active'} notes available.</p>
       )}
+      <ToastContainer />
     </div>
   );
 }
