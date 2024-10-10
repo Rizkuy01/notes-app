@@ -1,17 +1,8 @@
 import { useState } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { LanguageProvider } from './context/LanguageContext';
-import AppRoutes from './routes/Routes';
 import './index.css';
-
-interface Note {
-  _id: string;
-  title: string;
-  body: string;
-  createdAt: string;
-  archived: boolean;
-}
 
 function App() {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -24,9 +15,8 @@ function App() {
   return (
     <LanguageProvider>
       <ThemeProvider>
-        <Router>
           <div className={isDarkMode ? 'dark' : ''}>
-            <AppRoutes notes={notes} setNotes={setNotes} />
+            < Outlet />
             {/* Button Ubah Tema */}
             <button
               className="fixed bottom-4 right-4 p-3 bg-gray-800 text-white rounded-full shadow-lg hover:bg-gray-600 transition-transform transform hover:scale-105"
@@ -36,7 +26,6 @@ function App() {
             </button>
 
           </div>
-        </Router>
       </ThemeProvider>
     </LanguageProvider>
   );

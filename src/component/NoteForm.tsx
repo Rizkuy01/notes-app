@@ -1,17 +1,9 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
-import { createNote, updateNote } from '../api/AuthService';
+import { createNote, updateNote } from '../api/NoteService';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-// Define Note interface
-interface Note {
-  _id: string;
-  title: string;
-  body: string;
-  createdAt: string;
-  archived: boolean;
-}
 
 // Define NoteFormModalProps interface
 interface NoteFormModalProps {

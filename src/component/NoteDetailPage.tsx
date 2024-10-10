@@ -1,15 +1,21 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { Note } from "../api/AuthService";
+import { Note, fetchNoteDetail } from "../api/NoteService";
 import { toast, ToastContainer } from 'react-toastify';
+import { useEffect, useState } from "react";
 
-interface NoteDetailPageProps {
-    notes: Note[];
-}
 
-const NoteDetailPage: React.FC<NoteDetailPageProps> = ({ notes }) => {
-    const { noteId } = useParams<{ noteId: string }>();
+const NoteDetailPage = () => {
+    const noteId = useParams<{ noteId: string }>().noteId ?? "";
     const navigate = useNavigate();
-    const note = notes.find(note => note._id === noteId);
+    const [note, setNote] = useState<Note>();
+
+    useEffect(() => {
+        (async () => {
+            const response = await fetchNoteDetail(noteId);
+
+            setNote(response.data.note)
+        })()
+    }, [noteId])
 
     const handleBackClick = () => {
         const toastId = toast.loading('Navigating back...');

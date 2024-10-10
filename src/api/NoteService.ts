@@ -61,7 +61,7 @@ export const login = async (email: string, password: string) => {
 
 // Get user data
 export const getUser = async () => {
-  const token = localStorage.getItem('token');
+  const token = apiToken();
 
   if (token) {
     const response = await fetch(`${API_URL}/auth/me`, {
@@ -84,7 +84,7 @@ export const getUser = async () => {
 
 // Get user's notes
 export const getUserNotes = async () => {
-  const token = localStorage.getItem('token');
+  const token = apiToken();
 
   if (!token) {
     console.error('Token is missing');
@@ -108,7 +108,7 @@ export const getUserNotes = async () => {
 
 // Create Note
 export const createNote = async (title: string, body: string): Promise<Note> => {
-  const token = localStorage.getItem('token');
+  const token = apiToken();
     if (!token) {
       throw new Error('User not authenticated');
     }
@@ -135,7 +135,7 @@ export const createNote = async (title: string, body: string): Promise<Note> => 
 
 // Delete Note
 export const deleteNote = async (_id: string): Promise<DeleteResponse> => {
-  const token = localStorage.getItem('token');
+  const token = apiToken();
   if (!token) {
     throw new Error('User not authenticated');
   }
@@ -164,7 +164,7 @@ export const deleteNote = async (_id: string): Promise<DeleteResponse> => {
 
 // Update Note
 export const updateNote = async (_id: string, title: string, body: string) => {
-  const token = localStorage.getItem('token');
+  const token = apiToken();
 
   if (!token) { 
     console.error('Token is missing');
@@ -198,7 +198,9 @@ export const updateNote = async (_id: string, title: string, body: string) => {
 };
 
 // Detail Note
-export const fetchNoteDetail = async (noteId: string, token: string | null) => {
+export const fetchNoteDetail = async (noteId: string) => {
+  const token = apiToken();
+
   if (!token) {
     throw new Error('User not authenticated');
   }
@@ -223,7 +225,7 @@ export const fetchNoteDetail = async (noteId: string, token: string | null) => {
 
 // Get Archived Notes
 export const getArchivedNotes = async () => {
-  const token = localStorage.getItem('token');
+  const token = apiToken();
 
   if (!token) {
     console.error('Token is missing');
@@ -299,3 +301,8 @@ export const toggleArchiveNote = async (_id: string) => {
 export const logout = () => {
   localStorage.removeItem('token');
 };
+
+// token
+export const apiToken = () => {
+  return localStorage.getItem('token');
+}

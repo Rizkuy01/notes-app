@@ -1,15 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import { fetchNoteDetail } from '../api/AuthService';
+import { fetchNoteDetail } from '../api/NoteService';
 import Swal from 'sweetalert2';
 import { toast, ToastContainer } from 'react-toastify';
-
-interface Note {
-  _id: string;
-  title: string;
-  body: string;
-  createdAt: string;
-  archived: boolean;
-}
 
 interface NoteListProps {
   notes: Note[];
@@ -34,8 +26,7 @@ function NoteList({ notes, onDeleteNote, onToggleArchive, onEditNote, isArchived
   const handleCardClick = async (noteId: string) => {
     const toastId = toast.loading('Loading note details...');
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetchNoteDetail(noteId, token); 
+      const response = await fetchNoteDetail(noteId); 
       if (response.status === 'success') {
         toast.dismiss(toastId);
         navigate(`/notes/${noteId}`, { state: { note: response.data.note } }); 

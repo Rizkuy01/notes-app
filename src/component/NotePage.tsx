@@ -7,24 +7,12 @@ import HeroImage from '../aset/hero.png';
 import { AiOutlineSearch } from 'react-icons/ai';
 import NoteFormModal from './NoteForm';
 import { useNavigate } from 'react-router-dom';
-import { deleteNote as deleteNoteAPI , toggleArchiveUnarchiveNote as ArchiveNote} from '../api/AuthService';
+import { deleteNote as deleteNoteAPI , toggleArchiveUnarchiveNote as ArchiveNote} from '../api/NoteService';
 import { toast, ToastContainer } from 'react-toastify';
 
-// Define Note type
-interface Note {
-  _id: string;
-  title: string;
-  body: string;
-  createdAt: string;
-  archived: boolean;
-}
 
-interface NotePageProps {
-  notes: Note[];
-  setNotes: React.Dispatch<React.SetStateAction<Note[]>>;
-}
-
-const NotePage: React.FC<NotePageProps> = ({ notes, setNotes }) => {
+const NotePage = () => {
+  const [notes, setNotes] = useState<Note[]>([]);
   const [searchData, setSearchData] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [noteToEdit, setNoteToEdit] = useState<Note | null>(null);
@@ -150,7 +138,7 @@ const NotePage: React.FC<NotePageProps> = ({ notes, setNotes }) => {
       timer: 1500,
       showConfirmButton: false,
     }).then(() => {
-      navigate('/');
+      navigate('/auth');
     });
   };
 
