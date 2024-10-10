@@ -1,7 +1,8 @@
 import axios from 'axios';
 
+//REVIEW: PINDAHIN KE .env
 const API_URL = 'http://notes-api-knacademy.vercel.app/api';
-
+ 
 // Register
 export const register = async (username: string, email: string, password: string) => {
   const response = await axios.post(`${API_URL}/auth/register`, { username, email, password });

@@ -13,16 +13,16 @@ export const routes: RouteObject[] = [
         element: < RestrictAuth />,
         children: [
           
-      {
-        path: 'notes',
-        element: 
-            <NotePage />
-      },
-      {
-        path: 'notes/:noteId',
-        element: 
-            <NoteDetailPage />
-      },
+        {
+          path: 'notes',
+          element: 
+              <NotePage />
+        },
+        {
+          path: 'notes/:noteId',
+          element: 
+              <NoteDetailPage />
+        },
         ]
       },
       {

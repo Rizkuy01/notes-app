@@ -5,7 +5,7 @@ import { LanguageProvider } from './context/LanguageContext';
 import './index.css';
 
 function App() {
-  const [notes, setNotes] = useState<Note[]>([]);
+  const [notes, setNotes] = useState<Note[]>([]); // REVIEW : ini hilangin
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
   const toggleDarkMode = () => {

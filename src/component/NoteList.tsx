@@ -11,6 +11,7 @@ interface NoteListProps {
   isArchived: boolean;
 }
 
+// REVIEW : PINDAHIN KE FILE TERPISAH CONTOH DI src/utils
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
   return date.toLocaleDateString('en-GB', {
@@ -93,6 +94,7 @@ function NoteList({ notes, onDeleteNote, onToggleArchive, onEditNote, isArchived
       ) : (
         <p className="text-gray-500 dark:text-gray-400">No {isArchived ? 'archived' : 'active'} notes available.</p>
       )}
+      {/* REVIEW : ini bisa di taro di APP  */}
       <ToastContainer />
     </div>
   );

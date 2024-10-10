@@ -9,3 +9,5 @@ export interface Notes {
     createdAt: string;
     archived: boolean;
 }
+
+// REVIEW: KALO GA KE PAKE HAPUS FILENYA

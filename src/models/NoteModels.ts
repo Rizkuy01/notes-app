@@ -6,3 +6,4 @@ interface Note {
     createdAt: string;
     archived: boolean;
   }
+

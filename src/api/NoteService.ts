@@ -1,5 +1,6 @@
 const API_URL = 'https://notes-api-knacademy.vercel.app/api';
 
+//REVIEW: ini pisah ke folder Models
 export interface Note {
   _id: string;
   title: string;

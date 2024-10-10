@@ -140,6 +140,7 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
             </button>
           </div>
         </form>
+        {/* REVIEW : ini bisa di taro di APP  */}
         <ToastContainer />
       </div>
     </div>

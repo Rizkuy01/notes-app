@@ -15,7 +15,7 @@ const AuthPage: React.FC = () => {
 
   const handleRegister = async () => {
     try {
-      const response = await fetch(`${API_URL}/auth/register`, {
+      const response = await fetch(`${API_URL}/auth/register`, { // REVIEW : Harus Mengunakan AUthServices
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ const AuthPage: React.FC = () => {
     const toastId = toast.loading('Logging in...');
     
     try {
-      const response = await fetch(`${API_URL}/auth/login`, {
+      const response = await fetch(`${API_URL}/auth/login`, { // REVIEW : HARUS MENGUNAKAN AUTHSERVICES
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -154,7 +154,8 @@ const AuthPage: React.FC = () => {
       <div className="flex-1 hidden md:flex items-center justify-center">
         <img src={NoteImage} alt="Note" className="w-[70%] h-full object-cover" />
       </div>
-      <ToastContainer />
+      {/* REVIEW : ini bisa di taro di APP  */}
+      <ToastContainer /> 
     </div>
   );
 };

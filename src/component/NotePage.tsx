@@ -32,6 +32,7 @@ const NotePage = () => {
 
   // useEffect to fetch notes from API
   useEffect(() => {
+    // REVIEW : PINDAHIN HITNYA KE AuthSevices/NoteSevice
     const fetchNotesFromAPI = async () => {
       try {
         const token = localStorage.getItem('token');
@@ -225,6 +226,7 @@ const NotePage = () => {
       )}
 
       <Footer />
+      {/* REVIEW : ini bisa di taro di APP  */}
       <ToastContainer />
 
     </div>
