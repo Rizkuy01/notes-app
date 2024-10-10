@@ -16,3 +16,5 @@ export const loginUser = async (data) => {
     "email": "johndoe@example.com",
     "password": "password123",
 }
+
+// REVIEW : HAPUS FILE INI KALO TIDAK DI GUNAKAN

@@ -1,3 +1,4 @@
+//REVIEW: PINDAHIN KE .env
 const API_URL = 'https://notes-api-knacademy.vercel.app/api';
 
 //REVIEW: ini pisah ke folder Models
@@ -250,6 +251,7 @@ export const getArchivedNotes = async () => {
 
 // Toggle unArchive Note
 export const toggleArchiveUnarchiveNote = async (_id: string, uri : 'archive' | 'unarchive') => {
+  // REVIEW : MENGUNAKAN apiToken
   const token = localStorage.getItem('token');
 
   if (!token) {
@@ -275,6 +277,7 @@ export const toggleArchiveUnarchiveNote = async (_id: string, uri : 'archive' | 
 
 // Toggle Archive Note
 export const toggleArchiveNote = async (_id: string) => {
+  // REVIEW: MENGGUNAKAN apiToken
   const token = localStorage.getItem('token');
 
   if (!token) {
