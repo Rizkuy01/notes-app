@@ -7,8 +7,8 @@ import HeroImage from '../aset/hero.png';
 import { AiOutlineSearch } from 'react-icons/ai';
 import NoteFormModal from './NoteForm';
 import { useNavigate } from 'react-router-dom';
-import { deleteNote as deleteNoteAPI , toggleArchiveUnarchiveNote as ArchiveNote, apiToken, getUserNotes} from '../api/NoteService';
-import { toast, ToastContainer } from 'react-toastify';
+import { deleteNote as deleteNoteAPI , toggleArchiveUnarchiveNote as ArchiveNote, getUserNotes} from '../api/NoteService';
+import { toast } from 'react-toastify';
 
 
 const NotePage = () => {
