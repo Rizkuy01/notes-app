@@ -43,8 +43,8 @@ const NoteDetailPage = () => {
                 <p className="text-gray-500 dark:text-gray-800 mb-2">{note.createdAt}</p>
                 <p className="text-gray-700">{note.body}</p>
             </div>
-            {/* REVIEW : ini bisa di taro di APP  */}
-            <ToastContainer />
+            {/* done REVIEW : ini bisa di taro di APP  */}
+            
         </div>
     );
 };

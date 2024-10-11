@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { fetchNoteDetail } from '../api/NoteService';
 import Swal from 'sweetalert2';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
+import { formatDate } from '../utils/dateUtils';
 
 interface NoteListProps {
   notes: Note[];
@@ -11,15 +12,8 @@ interface NoteListProps {
   isArchived: boolean;
 }
 
-// REVIEW : PINDAHIN KE FILE TERPISAH CONTOH DI src/utils
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: '2-digit',
-    year: '2-digit',
-  });
-}
+//done REVIEW : PINDAHIN KE FILE TERPISAH CONTOH DI src/utils
+
 
 function NoteList({ notes, onDeleteNote, onToggleArchive, onEditNote, isArchived }: NoteListProps) {
   const navigate = useNavigate();
@@ -94,8 +88,7 @@ function NoteList({ notes, onDeleteNote, onToggleArchive, onEditNote, isArchived
       ) : (
         <p className="text-gray-500 dark:text-gray-400">No {isArchived ? 'archived' : 'active'} notes available.</p>
       )}
-      {/* REVIEW : ini bisa di taro di APP  */}
-      <ToastContainer />
+      {/*done REVIEW : ini bisa di taro di APP  */}
     </div>
   );
 }

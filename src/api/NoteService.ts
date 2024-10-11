@@ -1,14 +1,15 @@
-//REVIEW: PINDAHIN KE .env
-const API_URL = 'https://notes-api-knacademy.vercel.app/api';
+//done REVIEW: PINDAHIN KE .env
+const API_URL = 'process.env.REACT_APP_API_URL';
 
-//REVIEW: ini pisah ke folder Models
-export interface Note {
-  _id: string;
-  title: string;
-  body: string;
-  createdAt: string;
-  archived: boolean;
-}
+//done REVIEW: ini pisah ke folder Models
+
+// export interface Note {
+//   _id: string;
+//   title: string;
+//   body: string;
+//   createdAt: string;
+//   archived: boolean;
+// }
 
 interface DeleteResponse {
   success: boolean;
@@ -97,6 +98,7 @@ export const getUserNotes = async () => {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
     },
   });
 
@@ -251,8 +253,8 @@ export const getArchivedNotes = async () => {
 
 // Toggle unArchive Note
 export const toggleArchiveUnarchiveNote = async (_id: string, uri : 'archive' | 'unarchive') => {
-  // REVIEW : MENGUNAKAN apiToken
-  const token = localStorage.getItem('token');
+  //done REVIEW : MENGUNAKAN apiToken
+  const token = apiToken();
 
   if (!token) {
     throw new Error('User not authenticated');
@@ -277,8 +279,8 @@ export const toggleArchiveUnarchiveNote = async (_id: string, uri : 'archive' | 
 
 // Toggle Archive Note
 export const toggleArchiveNote = async (_id: string) => {
-  // REVIEW: MENGGUNAKAN apiToken
-  const token = localStorage.getItem('token');
+  // done REVIEW: MENGGUNAKAN apiToken
+  const token = apiToken();
 
   if (!token) {
     throw new Error('User not authenticated');

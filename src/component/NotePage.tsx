@@ -7,7 +7,7 @@ import HeroImage from '../aset/hero.png';
 import { AiOutlineSearch } from 'react-icons/ai';
 import NoteFormModal from './NoteForm';
 import { useNavigate } from 'react-router-dom';
-import { deleteNote as deleteNoteAPI , toggleArchiveUnarchiveNote as ArchiveNote} from '../api/NoteService';
+import { deleteNote as deleteNoteAPI , toggleArchiveUnarchiveNote as ArchiveNote, apiToken, getUserNotes} from '../api/NoteService';
 import { toast, ToastContainer } from 'react-toastify';
 
 
@@ -31,24 +31,12 @@ const NotePage = () => {
   );
 
   // useEffect to fetch notes from API
+  // done REVIEW : PINDAHIN HITNYA KE AuthSevices/NoteSevice
   useEffect(() => {
-    // REVIEW : PINDAHIN HITNYA KE AuthSevices/NoteSevice
-    const fetchNotesFromAPI = async () => {
+    const fetchNotes = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const response = await fetch('https://notes-api-knacademy.vercel.app/api/notes', {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        if (!response.ok) {
-          throw new Error('Failed to fetch notes');
-        }
-        const { data } = await response.json();
-        console.log(data);
-        setNotes(data.notes);
+        const notes = await getUserNotes();
+        setNotes(notes);
       } catch (error) {
         console.error('Error fetching notes:', error);
         Swal.fire({
@@ -59,8 +47,8 @@ const NotePage = () => {
       }
     };
 
-    fetchNotesFromAPI();
-  }, [setNotes, language]);
+    fetchNotes();
+  }, [language]);
 
   // Delete note function with API call
   const handleDeleteNote = async (id: string) => {
@@ -226,8 +214,7 @@ const NotePage = () => {
       )}
 
       <Footer />
-      {/* REVIEW : ini bisa di taro di APP  */}
-      <ToastContainer />
+      {/*done REVIEW : ini bisa di taro di APP  */}
 
     </div>
   );
