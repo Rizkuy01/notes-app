@@ -148,6 +148,7 @@ const NotePage = () => {
       </header>
 
       <div className="flex flex-col md:flex-row justify-between items-center p-2 mb-5 bg-green-600">
+        {/* button add notes */}
         <button
           className="px-4 py-2 md:px-6 md:py-3 bg-white text-green-600 rounded-lg shadow-lg hover:bg-gray-300 focus:ring-4 focus:ring-green-300 transition-transform transform hover:scale-105 mb-4 md:mb-0"
           onClick={() => {
@@ -158,6 +159,7 @@ const NotePage = () => {
           + Add Notes
         </button>
 
+          {/* search bar */}
         <div className="relative w-full md:w-auto">
           <AiOutlineSearch className="absolute left-3 top-2 text-gray-500" />
           <input
@@ -168,6 +170,7 @@ const NotePage = () => {
             placeholder="Search notes..."
           />
         </div>
+        {/* button logout */}
         <button
           className="mt-4 md:mt-0 ml-0 md:ml-5 px-4 py-2 md:px-6 md:py-3 bg-red-600 text-white rounded-lg shadow-lg hover:bg-red-700 focus:ring-4 focus:ring-red-300 transition-transform transform hover:scale-105"
           onClick={handleLogout}

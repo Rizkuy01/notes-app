@@ -3,13 +3,13 @@ const API_URL = 'process.env.REACT_APP_API_URL';
 
 //done REVIEW: ini pisah ke folder Models
 
-// export interface Note {
-//   _id: string;
-//   title: string;
-//   body: string;
-//   createdAt: string;
-//   archived: boolean;
-// }
+export interface Note {
+  _id: string;
+  title: string;
+  body: string;
+  createdAt: string;
+  archived: boolean;
+}
 
 interface DeleteResponse {
   success: boolean;

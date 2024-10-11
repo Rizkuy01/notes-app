@@ -97,6 +97,7 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
         <form onSubmit={handleSubmit}>
           <div className="mb-5">
             <label className="block text-gray-700 font-semibold mb-2">Title</label>
+            {/* input title */}
             <input
               type="text"
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 transition"
@@ -111,6 +112,7 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
 
           <div className="mb-5">
             <label className="block text-gray-700 font-semibold mb-2">Body</label>
+            {/* input detail notes */}
             <textarea
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 transition"
               rows={5}
@@ -123,6 +125,7 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
           </div>
 
           <div className="flex justify-end">
+            {/* button cancel */}
             <button
               type="button"
               className="mr-2 px-5 py-2 bg-gray-300 rounded-lg shadow hover:bg-gray-400 transition-colors"
@@ -131,6 +134,7 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
             >
               Cancel
             </button>
+            {/* button submit */}
             <button
               type="submit"
               className="px-5 py-2 bg-green-600 text-white rounded-lg shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105"
