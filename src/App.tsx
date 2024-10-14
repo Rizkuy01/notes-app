@@ -6,8 +6,6 @@ import './index.css';
 import { ToastContainer } from 'react-toastify';
 
 function App() {
-  // done REVIEW : ini hilangin
-
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
   const toggleDarkMode = () => {

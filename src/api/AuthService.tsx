@@ -1,6 +1,6 @@
+//REVIEW : rubah tsx menjadi ts
 import axios from 'axios';
 
-//REVIEW: PINDAHIN KE .env
 const API_URL = process.env.REACT_APP_API_URL;
  
 // Register
@@ -23,6 +23,8 @@ export const login = async (email: string, password: string) => {
 
 // Get user data
 export const getUser = async () => {
+  // REVIEW: BEST Practice, anda bisa memisahkan logika untuk localStorage ke Service Terpisah contoh 'CommonService'
+  // atau bisa centralize ke apiToken
   const token = localStorage.getItem('token');
   if (token) {
     const response = await axios.get(`${API_URL}/auth/me`, {

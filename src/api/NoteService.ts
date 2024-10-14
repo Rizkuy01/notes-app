@@ -1,7 +1,7 @@
-//done REVIEW: PINDAHIN KE .env
+// REVIEW: ada kekeliruan bisa di perbaiki
 const API_URL = 'process.env.REACT_APP_API_URL';
 
-//done REVIEW: ini pisah ke folder Models
+// REVIEW: ini pisah ke folder Models dan hapus Interface Note dari sini
 
 export interface Note {
   _id: string;
@@ -16,6 +16,8 @@ interface DeleteResponse {
   message: string;
 }
 
+
+// REVIEW: ini sudah ada du AuthService silahkan di Hapus karna tidak masuk context Note Service
 // Register
 export const register = async (username: string, email: string, password: string) => {
   const response = await fetch(`${API_URL}/auth/register`, {
@@ -38,7 +40,7 @@ export const register = async (username: string, email: string, password: string
   }
   return data;
 };
-
+// REVIEW: ini sudah ada du AuthService silahkan di Hapus karna tidak masuk context Note Service
 // Login
 export const login = async (email: string, password: string) => {
   const response = await fetch(`${API_URL}/auth/login`, {
@@ -61,7 +63,7 @@ export const login = async (email: string, password: string) => {
   console.log(email);
   return data;
 };
-
+// REVIEW: ini sudah ada du AuthService silahkan di Hapus karna tidak masuk context Note Service
 // Get user data
 export const getUser = async () => {
   const token = apiToken();
@@ -253,7 +255,6 @@ export const getArchivedNotes = async () => {
 
 // Toggle unArchive Note
 export const toggleArchiveUnarchiveNote = async (_id: string, uri : 'archive' | 'unarchive') => {
-  //done REVIEW : MENGUNAKAN apiToken
   const token = apiToken();
 
   if (!token) {
@@ -279,7 +280,6 @@ export const toggleArchiveUnarchiveNote = async (_id: string, uri : 'archive' | 
 
 // Toggle Archive Note
 export const toggleArchiveNote = async (_id: string) => {
-  // done REVIEW: MENGGUNAKAN apiToken
   const token = apiToken();
 
   if (!token) {
@@ -302,12 +302,13 @@ export const toggleArchiveNote = async (_id: string) => {
   const data = await response.json();
   return data;
 };
-
+// REVIEW: ini sudah ada du AuthService silahkan di Hapus karna tidak masuk context Note Service
 // Logout
 export const logout = () => {
   localStorage.removeItem('token');
 };
 
+// REVIEW: BEST Practice, anda bisa memisahkan logika untuk localStorage ke Service Terpisah contoh 'CommonService'
 // token
 export const apiToken = () => {
   return localStorage.getItem('token');
