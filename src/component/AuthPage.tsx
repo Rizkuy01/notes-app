@@ -154,8 +154,6 @@ const AuthPage: React.FC = () => {
       <div className="flex-1 hidden md:flex items-center justify-center">
         <img src={NoteImage} alt="Note" className="w-[70%] h-full object-cover" />
       </div>
-      {/* REVIEW : ini bisa di taro di APP  */}
-      <ToastContainer /> 
     </div>
   );
 };

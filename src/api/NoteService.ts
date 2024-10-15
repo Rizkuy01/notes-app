@@ -1,5 +1,5 @@
 //done REVIEW: PINDAHIN KE .env
-const API_URL = 'process.env.REACT_APP_API_URL';
+const API_URL = 'https://notes-api-knacademy.vercel.app/api';
 
 //done REVIEW: ini pisah ke folder Models
 
