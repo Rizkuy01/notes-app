@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Note, fetchNoteDetail } from "../api/NoteService";
+// Review : jika tidak terpakai bisa di hilangkan yah `ToastContainer`
 import { toast, ToastContainer } from 'react-toastify';
 import { useEffect, useState } from "react";
 
@@ -43,8 +44,6 @@ const NoteDetailPage = () => {
                 <p className="text-gray-500 dark:text-gray-800 mb-2">{note.createdAt}</p>
                 <p className="text-gray-700">{note.body}</p>
             </div>
-            {/* done REVIEW : ini bisa di taro di APP  */}
-            
         </div>
     );
 };

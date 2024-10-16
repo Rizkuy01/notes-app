@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { createNote, updateNote } from '../api/NoteService';
+// Review : jika tidak terpakai bisa di hilangkan yah `ToastContainer`
 import { toast, ToastContainer } from 'react-toastify';
+// Review : import ini di app 
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -144,7 +146,6 @@ const NoteFormModal: React.FC<NoteFormModalProps> = ({ setNotes, setIsModalOpen,
             </button>
           </div>
         </form>
-        {/*done REVIEW : ini bisa di taro di APP  */}
       </div>
     </div>
   );

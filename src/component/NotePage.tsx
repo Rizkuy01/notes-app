@@ -31,7 +31,6 @@ const NotePage = () => {
   );
 
   // useEffect to fetch notes from API
-  // done REVIEW : PINDAHIN HITNYA KE AuthSevices/NoteSevice
   useEffect(() => {
     const fetchNotes = async () => {
       try {
@@ -217,8 +216,6 @@ const NotePage = () => {
       )}
 
       <Footer />
-      {/*done REVIEW : ini bisa di taro di APP  */}
-
     </div>
   );
 };

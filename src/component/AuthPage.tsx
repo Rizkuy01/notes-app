@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import NoteImage from '../aset/note.png';
-import { toast, ToastContainer } from 'react-toastify';
-
-const API_URL = 'https://notes-api-knacademy.vercel.app/api';
+import { toast } from 'react-toastify';
+import { register, login } from '../api/AuthService'; // Import dari authservice
 
 const AuthPage: React.FC = () => {
   const [isRegistering, setIsRegistering] = useState<boolean>(false);
@@ -15,18 +14,7 @@ const AuthPage: React.FC = () => {
 
   const handleRegister = async () => {
     try {
-      const response = await fetch(`${API_URL}/auth/register`, { // REVIEW : Harus Mengunakan AUthServices
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, email, password }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Registration failed');
-      }
-
+      const response = await register(username, email, password); // Menggunakan authservice
       Swal.fire({
         icon: 'success',
         title: 'Registration Successful!',
@@ -34,6 +22,7 @@ const AuthPage: React.FC = () => {
         timer: 1500,
         showConfirmButton: false,
       });
+      console.log(response);
 
       setUsername('');
       setEmail('');
@@ -42,29 +31,17 @@ const AuthPage: React.FC = () => {
       Swal.fire({
         icon: 'error',
         title: 'Registration Failed',
-        text: 'Please check your details and try again.',
+        text: (error as Error).message || 'Please check your details and try again.',
       });
     }
   };
 
   const handleLogin = async () => {
     const toastId = toast.loading('Logging in...');
-    
+
     try {
-      const response = await fetch(`${API_URL}/auth/login`, { // REVIEW : HARUS MENGUNAKAN AUTHSERVICES
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Login failed');
-      }
-
-      const data = await response.json();
-      localStorage.setItem('token', data.token);
+      const response = await login(email, password); // Menggunakan authservice
+      localStorage.setItem('token', response.token);
       Swal.fire({
         icon: 'success',
         title: 'Login Successful!',
@@ -73,15 +50,14 @@ const AuthPage: React.FC = () => {
         showConfirmButton: false,
       });
 
-      toast.dismiss(toastId); 
-      navigate('/notes'); 
+      toast.dismiss(toastId);
+      navigate('/notes');
     } catch (error) {
-
       toast.dismiss(toastId);
       Swal.fire({
         icon: 'error',
         title: 'Login Failed',
-        text: 'Please check your credentials and try again.',
+        text: (error as Error).message || 'Please check your credentials and try again.',
       });
     }
   };
