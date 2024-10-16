@@ -1,6 +1,7 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { useEffect, useState } from 'react';
+//REVIEW : Module '"../api/NoteService"' has no exported member 'getUser'.
 import { apiToken, getUser } from '../api/NoteService';
 
 const RestrictAuth = () => {

@@ -1,4 +1,3 @@
-// REVIEW: ini Tidak di implementasikan dengan benar
 // Define Note type
 export interface Note {
     _id: string;

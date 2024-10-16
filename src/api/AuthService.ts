@@ -1,5 +1,6 @@
 import { apiToken } from "./NoteService";
-
+// REVIEW: PINDAHIN KE .env
+// ada sedikit kekeliruan di sini harap baca dengan benar, dan tidak merubah review sebelumnya
 const API_URL = 'https://notes-api-knacademy.vercel.app/api';
 
 // Register

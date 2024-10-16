@@ -5,9 +5,11 @@ import { toast } from 'react-toastify';
 import { formatDate } from '../utils/dateUtils';
 
 interface NoteListProps {
+  //REVIEW : Cannot find name 'Note'.
   notes: Note[];
   onDeleteNote: (id: string) => void;
   onToggleArchive: (id: string, uri: "archive" | "unarchive") => void;
+  //REVIEW : Cannot find name 'Note'.
   onEditNote: (note: Note) => void;
   isArchived: boolean;
 }

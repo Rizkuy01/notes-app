@@ -12,9 +12,11 @@ import { toast } from 'react-toastify';
 
 
 const NotePage = () => {
+  //REVIEW : Cannot find name 'Note'.
   const [notes, setNotes] = useState<Note[]>([]);
   const [searchData, setSearchData] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  //REVIEW : Cannot find name 'Note'.
   const [noteToEdit, setNoteToEdit] = useState<Note | null>(null);
   const { language, toggleLanguage } = useLanguage();
   const navigate = useNavigate();
