@@ -1,37 +1,100 @@
-//REVIEW : rubah tsx menjadi ts
-import axios from 'axios';
+import { apiToken } from "./NoteService";
 
-const API_URL = process.env.REACT_APP_API_URL;
- 
+const API_URL = 'https://notes-api-knacademy.vercel.app/api';
+
 // Register
 export const register = async (username: string, email: string, password: string) => {
-  const response = await axios.post(`${API_URL}/auth/register`, { username, email, password });
-  if (response.data.token) {
-    localStorage.setItem('token', response.data.token);
+  try {
+    const response = await fetch(`${API_URL}/auth/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, email, password }),
+    });
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(`Failed to register: ${errorMessage}`);
+    }
+
+    const data = await response.json();
+
+    if (data.token) {
+      localStorage.setItem('token', data.token);
+    }
+
+    return data;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error('Failed to register: ' + error.message);
+    } else {
+      throw new Error('An unknown error occurred during registration');
+    }
   }
-  return response.data;
 };
 
 // Login
 export const login = async (email: string, password: string) => {
-  const response = await axios.post(`${API_URL}/auth/login`, { email, password });
-  if (response.data.token) {
-    localStorage.setItem('token', response.data.token);
+  try {
+    const response = await fetch(`${API_URL}/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(`Failed to login: ${errorMessage}`);
+    }
+
+    const data = await response.json();
+
+    if (data.token) {
+      localStorage.setItem('token', data.token);
+    }
+
+    return data;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error('Failed to login: ' + error.message);
+    } else {
+      throw new Error('An unknown error occurred during login');
+    }
   }
-  return response.data;
 };
 
 // Get user data
 export const getUser = async () => {
-  // REVIEW: BEST Practice, anda bisa memisahkan logika untuk localStorage ke Service Terpisah contoh 'CommonService'
-  // atau bisa centralize ke apiToken
-  const token = localStorage.getItem('token');
+  const token = apiToken();
+
   if (token) {
-    const response = await axios.get(`${API_URL}/auth/me`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    return response.data;
+    try {
+      const response = await fetch(`${API_URL}/auth/me`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Failed to fetch user data: ${errorMessage}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error('Failed to fetch user data: ' + error.message);
+      } else {
+        throw new Error('An unknown error occurred during fetching user data');
+      }
+    }
   }
+
   return null;
 };
 

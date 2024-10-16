@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { createNote, updateNote } from '../api/NoteService';
-// Review : jika tidak terpakai bisa di hilangkan yah `ToastContainer`
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
+import { Note } from "../models/NoteModels";
 // Review : import ini di app 
-import 'react-toastify/dist/ReactToastify.css';
+
 
 
 // Define NoteFormModalProps interface

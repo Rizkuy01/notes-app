@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { Note, fetchNoteDetail } from "../api/NoteService";
-// Review : jika tidak terpakai bisa di hilangkan yah `ToastContainer`
-import { toast, ToastContainer } from 'react-toastify';
+import { fetchNoteDetail } from "../api/NoteService";
+import {Note} from "../models/NoteModels";
+import { toast } from 'react-toastify';
 import { useEffect, useState } from "react";
 
 

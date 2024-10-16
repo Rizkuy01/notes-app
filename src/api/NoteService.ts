@@ -1,91 +1,21 @@
 //done REVIEW: PINDAHIN KE .env
-const API_URL = 'process.env.REACT_APP_API_URL';
+import { Note } from "../models/NoteModels"
+const API_URL = 'https://notes-api-knacademy.vercel.app/api';
 
 // REVIEW: ini pisah ke folder Models dan hapus Interface Note dari sini
 
-export interface Note {
-  _id: string;
-  title: string;
-  body: string;
-  createdAt: string;
-  archived: boolean;
-}
+// export interface Note {
+//   _id: string;
+//   title: string;
+//   body: string;
+//   createdAt: string;
+//   archived: boolean;
+// }
 
 interface DeleteResponse {
   success: boolean;
   message: string;
 }
-
-
-// REVIEW: ini sudah ada du AuthService silahkan di Hapus karna tidak masuk context Note Service
-// Register
-export const register = async (username: string, email: string, password: string) => {
-  const response = await fetch(`${API_URL}/auth/register`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ username, email, password }),
-    mode: 'cors',
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to register');
-  }
-
-  const data = await response.json();
-
-  if (data.token) {
-    localStorage.setItem('token', data.token);
-  }
-  return data;
-};
-// REVIEW: ini sudah ada du AuthService silahkan di Hapus karna tidak masuk context Note Service
-// Login
-export const login = async (email: string, password: string) => {
-  const response = await fetch(`${API_URL}/auth/login`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email, password }),
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to login');
-  }
-
-  const data = await response.json();
-
-  if (data.token) {
-    localStorage.setItem('token', data.token);
-  }
-  console.log(email);
-  return data;
-};
-// REVIEW: ini sudah ada du AuthService silahkan di Hapus karna tidak masuk context Note Service
-// Get user data
-export const getUser = async () => {
-  const token = apiToken();
-
-  if (token) {
-    const response = await fetch(`${API_URL}/auth/me`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch user data');
-    }
-
-    const data = await response.json();
-    return data;
-  }
-
-  return null;
-};
 
 // Get user's notes
 export const getUserNotes = async () => {
@@ -301,11 +231,6 @@ export const toggleArchiveNote = async (_id: string) => {
 
   const data = await response.json();
   return data;
-};
-// REVIEW: ini sudah ada du AuthService silahkan di Hapus karna tidak masuk context Note Service
-// Logout
-export const logout = () => {
-  localStorage.removeItem('token');
 };
 
 // REVIEW: BEST Practice, anda bisa memisahkan logika untuk localStorage ke Service Terpisah contoh 'CommonService'

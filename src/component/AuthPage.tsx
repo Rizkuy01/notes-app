@@ -3,7 +3,7 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import NoteImage from '../aset/note.png';
 import { toast } from 'react-toastify';
-import { register, login } from '../api/AuthService'; // Import dari authservice
+import { register, login } from '../api/AuthService'; 
 
 const AuthPage: React.FC = () => {
   const [isRegistering, setIsRegistering] = useState<boolean>(false);
@@ -14,7 +14,7 @@ const AuthPage: React.FC = () => {
 
   const handleRegister = async () => {
     try {
-      const response = await register(username, email, password); // Menggunakan authservice
+      const response = await register(username, email, password); 
       Swal.fire({
         icon: 'success',
         title: 'Registration Successful!',
@@ -40,7 +40,7 @@ const AuthPage: React.FC = () => {
     const toastId = toast.loading('Logging in...');
 
     try {
-      const response = await login(email, password); // Menggunakan authservice
+      const response = await login(email, password); 
       localStorage.setItem('token', response.token);
       Swal.fire({
         icon: 'success',
