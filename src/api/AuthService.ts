@@ -1,6 +1,6 @@
 import { apiToken } from "./NoteService";
 
-const API_URL = 'https://notes-api-knacademy.vercel.app/api';
+const API_URL = process.env.REACT_APP_API_URL; 
 
 // Register
 export const register = async (username: string, email: string, password: string) => {

@@ -1,16 +1,16 @@
 //done REVIEW: PINDAHIN KE .env
-import { Note } from "../models/NoteModels"
+// import { Note } from "../models/NoteModels"
 const API_URL = 'https://notes-api-knacademy.vercel.app/api';
 
 // REVIEW: ini pisah ke folder Models dan hapus Interface Note dari sini
 
-// export interface Note {
-//   _id: string;
-//   title: string;
-//   body: string;
-//   createdAt: string;
-//   archived: boolean;
-// }
+export interface Note {
+  _id: string;
+  title: string;
+  body: string;
+  createdAt: string;
+  archived: boolean;
+}
 
 interface DeleteResponse {
   success: boolean;

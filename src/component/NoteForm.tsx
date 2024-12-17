@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { createNote, updateNote } from '../api/NoteService';
 import { toast } from 'react-toastify';
-import { Note } from "../models/NoteModels";
+// import { Note } from "../models/NoteModels";
 // Review : import ini di app 
 
 

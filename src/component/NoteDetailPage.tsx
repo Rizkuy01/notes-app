@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchNoteDetail } from "../api/NoteService";
-import {Note} from "../models/NoteModels";
+// import {Note} from "../models/NoteModels";
 import { toast } from 'react-toastify';
 import { useEffect, useState } from "react";
 
