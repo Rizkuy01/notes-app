@@ -1,8 +1,7 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { useEffect, useState } from 'react';
-import { apiToken } from '../api/NoteService';
-import { getUser } from '../api/AuthService';
+import { apiToken, getUser } from '../api/NoteService';
 
 const RestrictAuth = () => {
   const token = apiToken();
